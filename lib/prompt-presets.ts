@@ -5,6 +5,7 @@ export type PromptCategory =
   | "Fitness"
   | "Fashion / Modeling"
   | "Creative / Fantasy"
+  | "Mythical"
   | "Cinematic"
   | "Retro"
   | "Trendy / Viral"
@@ -139,6 +140,18 @@ export const PROMPT_LIBRARY: Record<PromptCategory, PromptPreset[]> = {
     { id: "fan-9", label: "Forest spirit", prompt: "Forest spirit, moss crown, drifting spores, green-gold palette, mystical calm" },
     { id: "fan-10", label: "Dragon tamer", prompt: "Heroic dragon tamer, glowing embers, wind-blown cloak, cinematic backlight, epic fantasy" }
   ],
+  "Mythical": [
+    { id: "myth-1", label: "Phoenix hybrid", prompt: "Half-human, half-phoenix being with fiery wings, molten gold skin patterns, rising flames, majestic pose, mythical transformation" },
+    { id: "myth-2", label: "Wolf spirit", prompt: "Human-wolf hybrid with glowing amber eyes, silver fur patches, forest moonlight, spiritual aura, mystical connection to nature" },
+    { id: "myth-3", label: "Dragon descendant", prompt: "Dragon-human with scaled skin, reptilian eyes, ethereal horns, breathing mystical mist, ancient power emanating" },
+    { id: "myth-4", label: "Ocean guardian", prompt: "Mer-human hybrid with flowing gill slits, iridescent skin, sea-foam hair, surrounded by floating water droplets" },
+    { id: "myth-5", label: "Celestial being", prompt: "Star-touched human with constellation markings, glowing celestial tattoos, cosmic energy swirling, ethereal beauty" },
+    { id: "myth-6", label: "Forest centaur", prompt: "Human-deer hybrid with antlers, bark-textured skin, moss accessories, woodland magic, earth connection" },
+    { id: "myth-7", label: "Thunder bird", prompt: "Human with eagle features, lightning-charged feathers, storm clouds background, electrical energy crackling" },
+    { id: "myth-8", label: "Crystal shaman", prompt: "Human-crystal hybrid with gemstone skin, crystalline growths, prismatic light refraction, mystical knowledge keeper" },
+    { id: "myth-9", label: "Shadow wraith", prompt: "Ethereal human-spirit being, translucent dark energy, glowing purple eyes, floating in mysterious mist" },
+    { id: "myth-10", label: "Sun god avatar", prompt: "Divine human with golden fire aura, sun crown, radiant energy beams, celestial power manifesting" }
+  ],
   "Cinematic": [
     { id: "cin-1", label: "Blade Runner vibes", prompt: "Moody cinematic portrait, rain-streaked window, neon reflections, teal and orange grading" },
     { id: "cin-2", label: "Wes Anderson symmetry", prompt: "Symmetrical composition, pastel palette, quirky props, centered framing, vintage charm" },
@@ -177,7 +190,7 @@ export const PROMPT_LIBRARY: Record<PromptCategory, PromptPreset[]> = {
   ],
   "Minimal Studio": [
     { id: "ms-1", label: "White seamless", prompt: "Minimal portrait on white seamless, soft shadow, airy high-key aesthetic, clean styling" },
-    { id: "ms-2", label: "Gray gradient", prompt: "Neutral gray gradient backdrop, precise softbox light, editorial minimalism" },
+    { id: "ms-2", label: "Gray gradient", prompt: "Neutral gray gradient backdrop, half body portrait, precise softbox light, editorial minimalism" },
     { id: "ms-3", label: "Color pop", prompt: "Single bold color background, complementary outfit, graphic composition, studio crispness" },
     { id: "ms-4", label: "Soft duo-tone", prompt: "Duo-tone gel lighting, subtle color harmony, gentle contours, modern studio" },
     { id: "ms-5", label: "Window scrim", prompt: "Simulated window-scrim light, soft shadows, filmic subtlety, quiet mood" },

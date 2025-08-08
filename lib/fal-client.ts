@@ -1,9 +1,11 @@
+export type IdeogramStyle = "AUTO" | "REALISTIC" | "FICTION";
+
 export type FalGenerationParams = {
   prompt: string;
   numImages: number; // 1-4
   referenceImageUrl?: string;
   imageSize?: "square_hd" | "portrait_4_5" | "square" | string;
-  style?: "AUTO" | string;
+  style?: IdeogramStyle;
   renderingSpeed?: "BALANCED" | "QUALITY" | "SPEED";
 };
 

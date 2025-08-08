@@ -8,7 +8,7 @@ import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Select, SelectItem } from "@heroui/select";
 import type { Selection } from "@react-types/shared";
-import { generateWithFal, uploadToFal } from "@/lib/fal-client";
+import { generateWithFal, uploadToFal, type IdeogramStyle } from "@/lib/fal-client";
 import { ALL_CATEGORIES, PROMPT_LIBRARY, type PromptCategory } from "@/lib/prompt-presets";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { SafeImage } from "@/components/safe-image";
@@ -28,6 +28,7 @@ export function DashboardClient() {
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [items, setItems] = useState<GeneratedItem[]>([]);
   const [category, setCategory] = useState<PromptCategory>("Professional");
+  const [style, setStyle] = useState<IdeogramStyle>("AUTO");
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [loadingSpinners, setLoadingSpinners] = useState<string[]>([]);
@@ -43,6 +44,21 @@ export function DashboardClient() {
       loadExistingGenerations();
     }
   }, [session?.user.id]);
+
+  // Auto-populate prompt when category changes
+  useEffect(() => {
+    if (category) {
+      loadRandomPrompt();
+    }
+  }, [category]);
+
+  const loadRandomPrompt = () => {
+    const categoryPresets = PROMPT_LIBRARY[category] || [];
+    if (categoryPresets.length > 0) {
+      const randomPreset = categoryPresets[Math.floor(Math.random() * categoryPresets.length)];
+      setPrompt(randomPreset?.prompt || "");
+    }
+  };
 
   const loadExistingGenerations = async () => {
     try {
@@ -99,16 +115,13 @@ export function DashboardClient() {
     setLoadingSpinners([spinnerId]);
     
     try {
-      const categoryPresets = PROMPT_LIBRARY[category] || [];
-      const randomPreset = categoryPresets[Math.floor(Math.random() * categoryPresets.length)];
-      const promptToUse = prompt && prompt.trim().length > 0 ? prompt : randomPreset?.prompt || "";
-      if (!prompt || prompt.trim().length === 0) setPrompt(promptToUse);
+      const promptToUse = prompt.trim() || "professional headshot";
 
       const result = await generateWithFal({
         prompt: promptToUse,
         numImages: 1, // Always generate single image
         imageSize: "square_hd",
-        style: "AUTO",
+        style: style,
         renderingSpeed: "BALANCED",
         referenceImageUrl: referenceUrl ?? undefined,
       });
@@ -131,7 +144,7 @@ export function DashboardClient() {
               numImages: 1,
               imageUrls: [result.images[0].url],
               imageSize: "square_hd",
-              style: "AUTO",
+              style: style,
               renderingSpeed: "BALANCED",
               falRequestId: result.requestId,
             }),
@@ -167,9 +180,10 @@ export function DashboardClient() {
 
   return (
     <ErrorBoundary>
-      <section className="w-full">
-        <div className="container mx-auto max-w-7xl px-6 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <section className="w-full min-h-screen">
+        <div className="w-full px-6 py-8">
+          <div className="container mx-auto max-w-7xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-4 xl:col-span-3">
               <div className="lg:sticky lg:top-20 flex flex-col gap-6">
                 <Card className="bg-content1/60 border border-default-100">
@@ -194,24 +208,75 @@ export function DashboardClient() {
                       </Card>
                     )}
 
-                  <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                  <div className="flex w-full flex-col gap-4">
                     <Select
-                      className="max-w-xs"
+                      className="w-full"
                       label="Category"
                       selectedKeys={[category]}
                       onSelectionChange={(keys: Selection) => {
                         const key = Array.from(keys as Set<string>)[0] as PromptCategory;
                         setCategory(key);
-                        setPrompt("");
+                        // Prompt will be auto-populated by useEffect
                       }}
                     >
                       {ALL_CATEGORIES.map((cat) => (
                         <SelectItem key={cat}>{cat}</SelectItem>
                       ))}
                     </Select>
+                    
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-medium text-foreground">Style</label>
+                      <div className="flex flex-wrap gap-2">
+                        {(["AUTO", "REALISTIC", "FICTION"] as IdeogramStyle[]).map((styleOption) => (
+                          <Button
+                            key={styleOption}
+                            size="sm"
+                            variant={style === styleOption ? "solid" : "bordered"}
+                            color={style === styleOption ? "primary" : "default"}
+                            onPress={() => setStyle(styleOption)}
+                            className="min-w-fit"
+                          >
+                            {styleOption === "AUTO" ? "Auto" : 
+                             styleOption === "REALISTIC" ? "Realistic" : 
+                             "Fiction"}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
-                  <Textarea aria-label="Custom prompt" label="Prompt" minRows={3} value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+                  <div className="relative">
+                    <Textarea 
+                      aria-label="Custom prompt" 
+                      label="Prompt" 
+                      minRows={3} 
+                      value={prompt} 
+                      onChange={(e) => setPrompt(e.target.value)}
+                      description="Auto-generated prompt from selected category. Edit or refresh for variations."
+                    />
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="light"
+                      className="absolute top-1 right-1 z-10"
+                      onPress={loadRandomPrompt}
+                      title="Get a different prompt from this category"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                      </svg>
+                    </Button>
+                  </div>
 
                   <Button 
                     color="primary" 
@@ -244,9 +309,9 @@ export function DashboardClient() {
                       </Button>
                     </div>
                   )}
-                  <Button variant="light" size="sm" onPress={handleClear} isDisabled={items.length === 0}>
+                  {/* <Button variant="light" size="sm" onPress={handleClear} isDisabled={items.length === 0}>
                     Clear results
-                  </Button>
+                  </Button> */}
                 </CardBody>
                 </Card>
               </div>
@@ -324,6 +389,7 @@ export function DashboardClient() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
     </ErrorBoundary>

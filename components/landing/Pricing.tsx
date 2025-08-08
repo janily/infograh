@@ -87,7 +87,7 @@ export function Pricing() {
               <CardHeader className="flex items-center justify-between">
                 <div className="flex items-center gap-2 font-semibold">
                   Creator
-                  <span className="text-xs px-2 py-1 rounded-full bg-primary/20 text-primary-900 dark:text-primary-100">
+                  <span className="text-xs px-2 py-1 rounded-full bg-primary text-primary-foreground font-medium shadow-sm">
                     Best value
                   </span>
                 </div>
