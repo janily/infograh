@@ -6,8 +6,8 @@ export const siteConfig = {
     "Upload one photo, get dozens of studio‑quality shots of yourself in any setting — fast, consistent, and private.",
   navItems: [
     {
-      label: "Home",
-      href: "/",
+      label: "Features",
+      href: "/#features",
     },
     {
       label: "How it works",
@@ -15,49 +15,25 @@ export const siteConfig = {
     },
     {
       label: "Pricing",
-      href: "/pricing",
-    },
-    {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "About",
-      href: "/about",
+      href: "/#pricing",
     },
   ],
   navMenuItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Features",
+      href: "/#features",
+    },
+    {
+      label: "How it works",
+      href: "/#how-it-works",
+    },
+    {
+      label: "Pricing",
+      href: "/#pricing",
     },
     {
       label: "Dashboard",
       href: "/dashboard",
-    },
-    {
-      label: "Projects",
-      href: "/projects",
-    },
-    {
-      label: "Team",
-      href: "/team",
-    },
-    {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
     },
   ],
   links: {

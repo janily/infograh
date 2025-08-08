@@ -17,7 +17,7 @@ const staggerContainer: Variants = {
 
 export function Features() {
   return (
-    <section className="w-full min-h-screen snap-start flex items-center">
+    <section className="w-full min-h-screen snap-start flex items-center" id="features">
       <div className="container mx-auto max-w-7xl px-6 py-14">
         <div className="grid gap-6 md:grid-cols-3">
           {[

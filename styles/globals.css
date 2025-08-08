@@ -1,3 +1,7 @@
 @import "tailwindcss";
+@config "../hero.ts";
 
-@config "../tailwind.config.js"
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}

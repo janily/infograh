@@ -7,7 +7,7 @@ import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import { Navbar } from "@/components/navbar";
+import { ConditionalNavbar } from "@/components/conditional-navbar";
 
 export const metadata: Metadata = {
   title: {
@@ -42,28 +42,34 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
-            {/* Decorative global background */}
-            <div
-              aria-hidden
-              className="pointer-events-none fixed inset-0 -z-10"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_-10%,rgba(120,119,198,0.25),rgba(255,255,255,0)_50%)]" />
-              <div className="absolute inset-0 bg-[conic-gradient(from_180deg_at_50%_50%,rgba(56,189,248,0.10),rgba(232,121,249,0.10),rgba(59,130,246,0.10),rgba(56,189,248,0.10))]" />
-            </div>
-            <Navbar />
+          <div className="relative flex flex-col h-screen bg-gradient-to-br from-default-100 to-background">
+            <ConditionalNavbar />
             <main className="pt-0 flex-grow snap-y snap-mandatory">
               {children}
             </main>
-            <footer className="w-full flex items-center justify-center py-3">
+            <footer className="w-full flex items-center justify-center gap-4 py-3 border-t border-default-200">
               <Link
                 isExternal
                 className="flex items-center gap-1 text-current"
-                href="https://heroui.com?utm_source=next-app-template"
-                title="heroui.com homepage"
+                href="https://fal.ai"
+                title="fal.ai homepage"
               >
                 <span className="text-default-600">Powered by</span>
-                <p className="text-primary">HeroUI</p>
+                <p className="text-primary">FAL AI</p>
+              </Link>
+              <span className="text-default-400">•</span>
+              <Link
+                isExternal
+                className="flex items-center gap-1 text-current"
+                href="https://x.com/deifosv"
+                title="Built by Vlad"
+              >
+                <span className="text-default-600">Built with</span>
+                <span className="text-yellow-500">💛</span>
+                <span className="text-default-600">and</span>
+                <span>🔨</span>
+                <span className="text-default-600">by</span>
+                <p className="text-primary">Vlad</p>
               </Link>
             </footer>
           </div>

@@ -44,7 +44,7 @@ export function Hero() {
               seconds.
             </motion.p>
             <motion.div className="flex flex-wrap gap-3" variants={fadeUp}>
-              <Button as={Link} href="#pricing" color="primary" radius="full" size="lg">
+              <Button as={Link} href="/dashboard" color="primary" radius="full" size="lg">
                 Get started
               </Button>
               <Button as={Link} href="#how-it-works" variant="bordered" radius="full" size="lg">
