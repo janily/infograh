@@ -19,7 +19,7 @@ export function HowItWorks() {
   return (
     <section className="w-full min-h-screen snap-start flex items-center" id="how-it-works">
       <div className="container mx-auto max-w-7xl px-6 py-16">
-        <motion.h2 className={title({ size: "md", fullWidth: true })} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+        <motion.h2 className={title({ size: "md", fullWidth: true, className: "text-center" })} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
           How it works
         </motion.h2>
         <div className="grid gap-6 md:grid-cols-3 mt-6">

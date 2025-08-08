@@ -19,7 +19,7 @@ export function Testimonials() {
   return (
     <section className="w-full min-h-screen snap-start flex items-center">
       <div className="container mx-auto max-w-7xl px-6 py-16">
-        <motion.h2 className={title({ size: "md", fullWidth: true })} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+        <motion.h2 className={title({ size: "md", fullWidth: true, className: "text-center" })} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
           Loved by creators and teams
         </motion.h2>
         <div className="mt-6 grid gap-6 md:grid-cols-3">

@@ -16,15 +16,25 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean
-  image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
+  id               String    @id
+  name             String
+  email            String
+  emailVerified    Boolean
+  image            String?
+  createdAt        DateTime
+  updatedAt        DateTime
+  sessions         Session[]
+  accounts         Account[]
+  
+  // Stripe fields
+  stripeCustomerId String?   @unique
+  
+  // Generation tracking
+  purchases        Purchase[]
+  generations      Generation[]
+  
+  // Current credits (sum of all active purchases)
+  availableCredits Int       @default(0)
 
   @@unique([email])
   @@map("user")
@@ -73,4 +83,66 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Purchase {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Stripe data
+  stripeSessionId   String   @unique
+  stripePaymentIntentId String? @unique
+  stripePriceId     String
+  stripeProductId   String
+  
+  // Purchase details
+  productName       String   // "Starter" or "Creator"
+  totalCredits      Int      // 20 or 40
+  creditsUsed       Int      @default(0)
+  creditsRemaining  Int      // totalCredits - creditsUsed
+  
+  // Pricing
+  amount            Int      // in cents (1200 or 2000)
+  currency          String   @default("usd")
+  
+  // Status
+  status            PurchaseStatus @default(PENDING)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("purchase")
+}
+
+model Generation {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Generation data
+  prompt      String
+  category    String
+  numImages   Int
+  imageUrls   String[] // Array of generated image URLs
+  
+  // Generation settings
+  imageSize   String
+  style       String
+  renderingSpeed String
+  
+  // Tracking
+  creditsUsed Int      @default(1) // Usually 1 credit per generation
+  falRequestId String? // FAL request ID for tracking
+  
+  createdAt   DateTime @default(now())
+
+  @@map("generation")
+}
+
+enum PurchaseStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
 }

@@ -47,29 +47,27 @@ export default function RootLayout({
             <main className="pt-0 flex-grow snap-y snap-mandatory">
               {children}
             </main>
-            <footer className="w-full flex items-center justify-center gap-4 py-3 border-t border-default-200">
+            <footer className="w-full flex items-center justify-center gap-3 py-2 border-t border-default-100 bg-default-50/50">
               <Link
                 isExternal
-                className="flex items-center gap-1 text-current"
+                className="flex items-center gap-1 text-current hover:text-primary transition-colors"
                 href="https://fal.ai"
                 title="fal.ai homepage"
               >
-                <span className="text-default-600">Powered by</span>
-                <p className="text-primary">FAL AI</p>
+                <span className="text-default-500 text-xs">Powered by</span>
+                <span className="text-default-700 text-xs font-medium">FAL AI</span>
               </Link>
-              <span className="text-default-400">•</span>
+              <span className="text-default-300 text-xs">•</span>
               <Link
                 isExternal
-                className="flex items-center gap-1 text-current"
+                className="flex items-center gap-1 text-current hover:text-primary transition-colors"
                 href="https://x.com/deifosv"
                 title="Built by Vlad"
               >
-                <span className="text-default-600">Built with</span>
-                <span className="text-yellow-500">💛</span>
-                <span className="text-default-600">and</span>
-                <span>🔨</span>
-                <span className="text-default-600">by</span>
-                <p className="text-primary">Vlad</p>
+                <span className="text-default-500 text-xs">Built with</span>
+                <span className="text-xs">💛</span>
+                <span className="text-default-500 text-xs">by</span>
+                <span className="text-default-700 text-xs font-medium">Vlad</span>
               </Link>
             </footer>
           </div>

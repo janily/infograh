@@ -8,11 +8,14 @@ interface SafeImageProps {
   src: string;
   alt: string;
   fill?: boolean;
+  width?: number;
+  height?: number;
   className?: string;
   fallback?: React.ReactNode;
+  onLoad?: () => void;
 }
 
-export function SafeImage({ src, alt, fill, className, fallback }: SafeImageProps) {
+export function SafeImage({ src, alt, fill, width, height, className, fallback, onLoad }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,12 +45,17 @@ export function SafeImage({ src, alt, fill, className, fallback }: SafeImageProp
         src={src}
         alt={alt}
         fill={fill}
+        width={width}
+        height={height}
         className={className}
         onError={() => {
           setHasError(true);
           setIsLoading(false);
         }}
-        onLoad={() => setIsLoading(false)}
+        onLoad={() => {
+          setIsLoading(false);
+          onLoad?.();
+        }}
         unoptimized // For external images that might have CORS issues
       />
     </div>

@@ -3,8 +3,11 @@
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { motion, Variants } from "framer-motion";
+import { useState } from "react";
 
 import { title } from "@/components/primitives";
+import { redirectToCheckout } from "@/lib/stripe-client";
+import { ErrorToast } from "@/components/error-toast";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -17,13 +20,40 @@ const staggerContainer: Variants = {
 };
 
 export function Pricing() {
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handlePurchase = async (plan: 'STARTER' | 'CREATOR') => {
+    try {
+      setLoadingPlan(plan);
+      setError(null);
+      
+      // Get price ID from environment variables (client-side)
+      const priceId = plan === 'STARTER' 
+        ? process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID
+        : process.env.NEXT_PUBLIC_STRIPE_CREATOR_PRICE_ID;
+      
+      if (!priceId) {
+        throw new Error('Stripe configuration is missing. Please contact support.');
+      }
+      
+      await redirectToCheckout(priceId);
+    } catch (error) {
+      console.error('Error starting checkout:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to start checkout. Please try again.';
+      setError(errorMessage);
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <section className="w-full min-h-screen snap-start flex items-center" id="pricing">
       <div className="container mx-auto max-w-7xl px-6 py-16">
-        <motion.h2 className={title({ size: "md", fullWidth: true })} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+        <motion.h2 className={title({ size: "md", fullWidth: true, className: "text-center" })} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
           Simple pricing
         </motion.h2>
-        <motion.p className="text-default-600 mt-2" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+        <motion.p className="text-default-600 mt-2 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
           Pay once. Keep everything you generate.
         </motion.p>
         <div className="grid gap-6 md:grid-cols-2 mt-6 max-w-3xl mx-auto">
@@ -39,7 +69,14 @@ export function Pricing() {
                   <li>High consistency model</li>
                   <li>Commercial use</li>
                 </ul>
-                <Button color="primary" className="mt-6" radius="full" size="lg">
+                <Button 
+                  color="primary" 
+                  className="mt-6" 
+                  radius="full" 
+                  size="lg"
+                  isLoading={loadingPlan === 'STARTER'}
+                  onPress={() => handlePurchase('STARTER')}
+                >
                   Choose Starter
                 </Button>
               </CardBody>
@@ -62,7 +99,15 @@ export function Pricing() {
                   <li>Priority generation</li>
                   <li>HD exports</li>
                 </ul>
-                <Button color="primary" variant="shadow" className="mt-6" radius="full" size="lg">
+                <Button 
+                  color="primary" 
+                  variant="shadow" 
+                  className="mt-6" 
+                  radius="full" 
+                  size="lg"
+                  isLoading={loadingPlan === 'CREATOR'}
+                  onPress={() => handlePurchase('CREATOR')}
+                >
                   Choose Creator
                 </Button>
               </CardBody>
@@ -70,6 +115,13 @@ export function Pricing() {
           </motion.div>
         </div>
       </div>
+      
+      {error && (
+        <ErrorToast 
+          message={error} 
+          onClose={() => setError(null)} 
+        />
+      )}
     </section>
   );
 }

@@ -9,8 +9,13 @@ import NextLink from "next/link";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { UserMenu } from "@/components/user-menu";
 import { Logo } from "@/components/icons";
+import { CreditsDisplay } from "@/components/credits-display";
 
-export const DashboardNavbar = () => {
+interface DashboardNavbarProps {
+  userId?: string;
+}
+
+export const DashboardNavbar = ({ userId }: DashboardNavbarProps) => {
   return (
     <HeroUINavbar maxWidth="xl" position="sticky" className="backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -23,7 +28,12 @@ export const DashboardNavbar = () => {
       </NavbarContent>
 
       <NavbarContent className="basis-1/5 sm:basis-full" justify="end">
-        <NavbarItem className="flex gap-2">
+        <NavbarItem className="flex gap-4 items-center">
+          {userId && (
+            <div className="hidden sm:block">
+              <CreditsDisplay userId={userId} compact />
+            </div>
+          )}
           <ThemeSwitch />
           <UserMenu />
         </NavbarItem>
