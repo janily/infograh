@@ -56,60 +56,132 @@ export function Pricing() {
         <motion.p className="text-default-600 mt-2 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
           Pay once. Keep everything you generate.
         </motion.p>
-        <div className="grid gap-6 md:grid-cols-2 mt-6 max-w-3xl mx-auto">
+        <div className="grid gap-6 md:grid-cols-2 mt-8 max-w-4xl mx-auto">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <Card className="bg-content1/60 border border-default-100 max-w-sm mx-auto w-full">
-              <CardHeader className="flex items-center justify-between">
-                <div className="font-semibold">Starter</div>
-                <div className="text-2xl font-semibold">$12</div>
+            <Card className="bg-content1/60 border border-default-100 h-full">
+              <CardHeader className="pb-4">
+                <div className="w-full">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xl font-semibold">Starter</div>
+                    <div className="text-3xl font-bold">$12</div>
+                  </div>
+                  <p className="text-default-500 text-sm">Perfect for personal use</p>
+                </div>
               </CardHeader>
-              <CardBody className="text-default-600">
-                <ul className="list-disc ml-4 space-y-2">
-                  <li>20 images</li>
-                  <li>High consistency model</li>
-                  <li>Commercial use</li>
-                </ul>
-                <Button 
-                  color="primary" 
-                  className="mt-6" 
-                  radius="full" 
-                  size="lg"
-                  isLoading={loadingPlan === 'STARTER'}
-                  onPress={() => handlePurchase('STARTER')}
-                >
-                  Choose Starter
-                </Button>
+              <CardBody className="pt-0">
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="font-medium mb-3">What's included:</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>20 high-quality images</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>High consistency model</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>All style categories</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>Commercial use license</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>Instant download</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>No watermarks</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="pt-2">
+                    <div className="text-xs text-default-500 mb-4">
+                      $0.60 per image • One-time payment
+                    </div>
+                    <Button 
+                      color="primary" 
+                      variant="flat"
+                      className="w-full" 
+                      size="lg"
+                      isLoading={loadingPlan === 'STARTER'}
+                      onPress={() => handlePurchase('STARTER')}
+                    >
+                      Choose Starter
+                    </Button>
+                  </div>
+                </div>
               </CardBody>
             </Card>
           </motion.div>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <Card className="bg-content1/60 border-2 border-primary/40 max-w-sm mx-auto w-full">
-              <CardHeader className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-semibold">
-                  Creator
-                  <span className="text-xs px-2 py-1 rounded-full bg-primary text-primary-foreground font-medium shadow-sm">
-                    Best value
-                  </span>
+            <Card className="bg-content1/60 border-2 border-primary/40 h-full relative overflow-visible">
+              {/* Popular badge - inclined corner ribbon */}
+              <div className="absolute -top-3 -right-3 transform rotate-12 z-10">
+                <div className="bg-gradient-to-r from-primary to-secondary text-white px-5 py-2 text-sm font-bold shadow-xl rounded-sm">
+                  Most Popular
                 </div>
-                <div className="text-2xl font-semibold">$20</div>
+              </div>
+              <CardHeader className="pb-4 pt-6">
+                <div className="w-full">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xl font-semibold">Creator</div>
+                    <div className="text-3xl font-bold">$20</div>
+                  </div>
+                  <p className="text-default-500 text-sm">Best value for content creators</p>
+                </div>
               </CardHeader>
-              <CardBody className="text-default-600">
-                <ul className="list-disc ml-4 space-y-2">
-                  <li>40 images</li>
-                  <li>Priority generation</li>
-                  <li>HD exports</li>
-                </ul>
-                <Button 
-                  color="primary" 
-                  variant="shadow" 
-                  className="mt-6" 
-                  radius="full" 
-                  size="lg"
-                  isLoading={loadingPlan === 'CREATOR'}
-                  onPress={() => handlePurchase('CREATOR')}
-                >
-                  Choose Creator
-                </Button>
+              <CardBody className="pt-0">
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="font-medium mb-3">Everything in Starter, plus:</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span className="font-medium">40 high-quality images</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>Priority generation queue</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>Bulk download (ZIP file)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>Premium support</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-primary">✓</span>
+                        <span>Early access to new features</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-success">✓</span>
+                        <span className="font-medium text-success">50% more value</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="pt-2">
+                    <div className="text-xs text-default-500 mb-4">
+                      $0.50 per image • One-time payment
+                    </div>
+                    <Button 
+                      color="primary" 
+                      variant="shadow" 
+                      className="w-full" 
+                      size="lg"
+                      isLoading={loadingPlan === 'CREATOR'}
+                      onPress={() => handlePurchase('CREATOR')}
+                    >
+                      Choose Creator
+                    </Button>
+                  </div>
+                </div>
               </CardBody>
             </Card>
           </motion.div>

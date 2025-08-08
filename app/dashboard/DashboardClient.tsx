@@ -226,7 +226,7 @@ export function DashboardClient() {
                     
                     <div className="flex flex-col gap-2">
                       <label className="text-sm font-medium text-foreground">Style</label>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 justify-center">
                         {(["AUTO", "REALISTIC", "FICTION"] as IdeogramStyle[]).map((styleOption) => (
                           <Button
                             key={styleOption}
@@ -234,7 +234,7 @@ export function DashboardClient() {
                             variant={style === styleOption ? "solid" : "bordered"}
                             color={style === styleOption ? "primary" : "default"}
                             onPress={() => setStyle(styleOption)}
-                            className="min-w-fit"
+                            className="min-w-[80px]"
                           >
                             {styleOption === "AUTO" ? "Auto" : 
                              styleOption === "REALISTIC" ? "Realistic" : 
