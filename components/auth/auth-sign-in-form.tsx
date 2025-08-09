@@ -81,7 +81,12 @@ export function AuthSignInForm({ className, ...props }: AuthSignInFormProps) {
               else router.push("/dashboard");
             }
           },
-          onError: (ctx: any) => setError(ctx?.error?.message || "Sign in failed"),
+          onError: (ctx: any) => {
+            const errorMessage = ctx?.error?.message || "Sign in failed";
+            console.log("Better-auth sign-in error:", errorMessage);
+            console.log("Full error context:", ctx);
+            setError(errorMessage);
+          },
         },
       );
       if (signInError) setError(signInError.message || "Sign in failed");
@@ -108,6 +113,18 @@ export function AuthSignInForm({ className, ...props }: AuthSignInFormProps) {
               {error && (
                 <div className="rounded-md bg-danger-50/20 p-3 border border-danger-200 text-danger-600 text-sm">
                   {error}
+                  {(error.toLowerCase().includes("verify") || 
+                    error.toLowerCase().includes("verification") || 
+                    error.toLowerCase().includes("unverified") ||
+                    error.toLowerCase().includes("email not verified") ||
+                    error.toLowerCase().includes("not verified") ||
+                    error.toLowerCase().includes("403")) && (
+                    <div className="mt-2 pt-2 border-t border-danger-200">
+                      <Link href="/auth/resend-verification" className="text-primary underline hover:no-underline">
+                        Resend verification email →
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -154,11 +171,19 @@ export function AuthSignInForm({ className, ...props }: AuthSignInFormProps) {
                 </Button>
               </form>
 
-              <div className="text-center text-sm">
-                Don&apos;t have an account? {" "}
-                <Link href={`/auth/sign-up${inviteToken ? `?invite=${inviteToken}` : ""}`} className="underline">
-                  Sign up
-                </Link>
+              <div className="text-center text-sm space-y-2">
+                <div>
+                  Don&apos;t have an account? {" "}
+                  <Link href={`/auth/sign-up${inviteToken ? `?invite=${inviteToken}` : ""}`} className="underline">
+                    Sign up
+                  </Link>
+                </div>
+                <div>
+                  Didn&apos;t receive verification email? {" "}
+                  <Link href="/auth/resend-verification" className="text-primary underline">
+                    Resend verification
+                  </Link>
+                </div>
               </div>
             </div>
           </CardBody>

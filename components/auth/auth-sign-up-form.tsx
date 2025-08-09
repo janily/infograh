@@ -164,6 +164,14 @@ export function AuthSignUpForm({ className, ...props }: AuthSignUpFormProps) {
               {error && (
                 <div className="rounded-md bg-danger-50/20 p-3 border border-danger-200 text-danger-600 text-sm">
                   {error}
+                  {(error.includes("already exists") || error.includes("already taken")) && (
+                    <div className="mt-2 pt-2 border-t border-danger-200">
+                      <p className="text-xs mb-1">Account already exists but not verified?</p>
+                      <Link href="/auth/resend-verification" className="text-primary underline hover:no-underline">
+                        Resend verification email →
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
 

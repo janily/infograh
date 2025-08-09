@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession } from '@/lib/auth-client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import { useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Spinner } from "@heroui/spinner";
+import { useSession } from "@/lib/auth-client";
 
 function EmailVerifiedContent() {
   const router = useRouter();
@@ -12,8 +12,8 @@ function EmailVerifiedContent() {
   const { data: session, isPending } = useSession();
 
   // Get invitation token and return URL from search params
-  const inviteToken = searchParams.get('invite');
-  const returnTo = searchParams.get('returnTo');
+  const inviteToken = searchParams.get("invite");
+  const returnTo = searchParams.get("returnTo");
 
   useEffect(() => {
     // If user is signed in after email verification, redirect to appropriate dashboard
@@ -22,11 +22,11 @@ function EmailVerifiedContent() {
         try {
           // Build query parameters for auth redirect API
           const params = new URLSearchParams();
-          if (inviteToken) params.set('invite', inviteToken);
-          if (returnTo) params.set('returnTo', returnTo);
+          if (inviteToken) params.set("invite", inviteToken);
+          if (returnTo) params.set("returnTo", returnTo);
           
           const queryString = params.toString();
-          const apiUrl = `/api/auth/redirect${queryString ? `?${queryString}` : ''}`;
+          const apiUrl = `/api/auth/redirect${queryString ? `?${queryString}` : ""}`;
           
           const response = await fetch(apiUrl);
           if (response.ok) {
@@ -39,18 +39,18 @@ function EmailVerifiedContent() {
             } else if (returnTo) {
               router.push(returnTo);
             } else {
-              router.push('/dashboard');
+              router.push("/dashboard");
             }
           }
         } catch (error) {
-          console.error('Error getting redirect URL:', error);
+          console.error("Error getting redirect URL:", error);
           // Fallback: handle invitation or return URL directly
           if (inviteToken) {
             router.push(`/invite/${inviteToken}`);
           } else if (returnTo) {
             router.push(returnTo);
           } else {
-            router.push('/dashboard');
+            router.push("/dashboard");
           }
         }
       };
@@ -64,11 +64,11 @@ function EmailVerifiedContent() {
   if (isPending) {
     return (
       <div className="flex items-center justify-center min-h-[80vh]">
-        <Card className="w-full max-w-md">
-          <CardContent className="flex flex-col items-center space-y-4 p-6">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-            <p className="text-center text-muted-foreground">Verifying your account...</p>
-          </CardContent>
+        <Card className="w-full max-w-md bg-content1/60 border border-default-100">
+          <CardBody className="flex flex-col items-center space-y-4 p-6">
+            <Spinner size="lg" color="primary" />
+            <p className="text-center text-default-500">Verifying your account...</p>
+          </CardBody>
         </Card>
       </div>
     );
@@ -76,20 +76,27 @@ function EmailVerifiedContent() {
 
   return (
     <div className="flex items-center justify-center min-h-[80vh]">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-            <CheckCircle2 className="h-8 w-8 text-green-500" />
+      <Card className="w-full max-w-md bg-content1/60 border border-default-100">
+        <CardHeader className="text-center pb-2">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success-100">
+            <svg className="h-8 w-8 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
           </div>
-          <CardTitle className="text-2xl">Email Verified!</CardTitle>
-          <CardDescription>Your email has been successfully verified.</CardDescription>
+          <h1 className="text-2xl font-bold text-foreground">Email Verified!</h1>
+          <p className="text-default-500">Your email has been successfully verified.</p>
         </CardHeader>
-        <CardContent className="text-center text-muted-foreground">
-          <p className="mb-4">
+        <CardBody className="text-center pt-0">
+          <p className="mb-4 text-default-600">
             Thank you for verifying your email address. Your account is now fully activated.
           </p>
-          {session?.user && <p className="text-sm">Redirecting you to your dashboard...</p>}
-        </CardContent>
+          {session?.user && (
+            <div className="flex items-center justify-center gap-2 text-sm text-default-500">
+              <Spinner size="sm" />
+              <span>Redirecting you to your dashboard...</span>
+            </div>
+          )}
+        </CardBody>
       </Card>
     </div>
   );
@@ -98,11 +105,11 @@ function EmailVerifiedContent() {
 function EmailVerifiedFallback() {
   return (
     <div className="flex items-center justify-center min-h-[80vh]">
-      <Card className="w-full max-w-md">
-        <CardContent className="flex flex-col items-center space-y-4 p-6">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-          <p className="text-center text-muted-foreground">Loading...</p>
-        </CardContent>
+      <Card className="w-full max-w-md bg-content1/60 border border-default-100">
+        <CardBody className="flex flex-col items-center space-y-4 p-6">
+          <Spinner size="lg" color="primary" />
+          <p className="text-center text-default-500">Loading...</p>
+        </CardBody>
       </Card>
     </div>
   );
