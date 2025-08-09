@@ -83,9 +83,9 @@ export function HowItWorks() {
               <Card className="bg-content1/60 border border-default-100 hover:border-primary/30 transition-colors h-full">
                 <CardBody className="p-4 text-center">
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary text-white grid place-items-center font-bold text-sm shadow-lg">
-                      {step.step}
-                    </div>
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-pink-500 text-white grid place-items-center font-bold text-sm shadow-lg">
+                          {step.step}
+                        </div>
                     <div className="space-y-1">
                       <div className="flex items-center justify-center gap-2">
                         <span className="text-xl">{step.icon}</span>

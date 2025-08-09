@@ -129,7 +129,7 @@ export function Testimonials() {
                       <Avatar
                         name={testimonial.avatar}
                         size="sm"
-                        className="bg-gradient-to-br from-primary to-secondary text-white font-medium"
+                        className="bg-gradient-to-br from-emerald-500 to-teal-500 text-white font-medium"
                       />
                       <div>
                         <div className="font-semibold text-sm">{testimonial.name}</div>
