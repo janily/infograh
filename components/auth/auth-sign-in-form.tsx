@@ -174,8 +174,8 @@ export function AuthSignInForm({ className, ...props }: AuthSignInFormProps) {
       </Card>
       <div className="text-default-500 text-center text-xs">
         By clicking continue, you agree to our {" "}
-        <a href="#" className="underline">Terms of Service</a> and {" "}
-        <a href="#" className="underline">Privacy Policy</a>.
+        <a href="/terms" className="underline hover:text-primary transition-colors">Terms of Service</a> and {" "}
+        <a href="/privacy" className="underline hover:text-primary transition-colors">Privacy Policy</a>.
       </div>
     </div>
   );
