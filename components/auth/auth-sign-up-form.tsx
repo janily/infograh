@@ -1,121 +1,100 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { authClient } from '@/lib/auth-client';
-import { Loader2, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Separator } from '@/components/ui/separator';
+import { useState, FormEvent } from "react";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Card, CardBody } from "@heroui/card";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
+import { GoogleIcon } from "@/components/icons";
+import { authClient } from "@/lib/auth-client";
 
-// Form validation schema
-const signUpSchema = z.object({
-  firstName: z.string().min(1, { message: 'First name is required' }),
-  lastName: z.string().min(1, { message: 'Last name is required' }),
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z
-    .string()
-    .min(8, { message: 'Password must be at least 8 characters' })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, {
-      message:
-        'Password must contain at least one uppercase letter, one lowercase letter, and one number',
-    }),
-});
-
-type SignUpFormData = z.infer<typeof signUpSchema>;
-
-interface AuthSignUpFormProps extends React.ComponentProps<'div'> {}
+interface AuthSignUpFormProps extends React.ComponentProps<"div"> {}
 
 export function AuthSignUpForm({ className, ...props }: AuthSignUpFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const inviteToken = searchParams.get("invite") || undefined;
+  const returnTo = searchParams.get("returnTo") || undefined;
+  const callbackURL = returnTo;
 
-  // Get invitation token from search params
-  const inviteToken = searchParams.get('invite');
-
-  // Form setup
-  const form = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    },
-  });
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const handleGoogleAuth = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Build callback URL with invitation context
-      let callbackURL = '/auth/email-verified';
+      let redirectURL = "/dashboard";
       if (inviteToken) {
-        callbackURL = `/invite/${inviteToken}`;
+        redirectURL = `/invite/${inviteToken}`;
+      } else if (callbackURL) {
+        redirectURL = callbackURL;
       }
       
       await authClient.signIn.social({
-        provider: 'google',
-        callbackURL,
+        provider: "google",
+        callbackURL: redirectURL,
       });
     } catch (err) {
-      setError('Failed to sign up with Google. Please try again.');
-      console.error('Google auth error:', err);
+      setError("Failed to sign up with Google. Please try again.");
+      console.error("Google auth error:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const onSubmit = async (values: SignUpFormData) => {
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
     setError(null);
 
+    if (!firstName || !lastName || !email || !password) {
+      setError("All fields are required.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      // Build callback URL with invitation context
-      let callbackURL = '/auth/email-verified';
+      let redirectURL = "/auth/email-verified";
       if (inviteToken) {
-        callbackURL += `?invite=${inviteToken}`;
+        redirectURL += `?invite=${inviteToken}`;
       }
 
       const { error } = await authClient.signUp.email(
         {
-          email: values.email,
-          password: values.password,
-          name: `${values.firstName} ${values.lastName}`,
-          callbackURL,
+          email,
+          password,
+          name: `${firstName} ${lastName}`,
+          callbackURL: redirectURL,
         },
         {
           onRequest: () => setIsLoading(true),
           onSuccess: () => {
             setSuccess(true);
           },
-          onError: ctx => setError(ctx.error.message || 'Sign up failed'),
+          onError: (ctx: any) => setError(ctx.error.message || "Sign up failed"),
         }
       );
 
       if (error) {
-        setError(error.message || 'Sign up failed');
+        setError(error.message || "Sign up failed");
       }
     } catch {
-      setError('An unexpected error occurred');
+      setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -124,218 +103,167 @@ export function AuthSignUpForm({ className, ...props }: AuthSignUpFormProps) {
   // Success state
   if (success) {
     return (
-      <div className={cn('flex flex-col gap-6', className)} {...props}>
+      <div className={`flex flex-col gap-6 ${className ?? ""}`} {...props}>
         <Card className="overflow-hidden p-0">
-          <CardContent className="grid p-0 md:grid-cols-2">
-            <div className="p-6 md:p-8">
+          <div className="grid p-0 md:grid-cols-2">
+            <CardBody className="p-6 md:p-8">
               <div className="flex flex-col items-center text-center space-y-6">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-8 w-8 text-green-600" />
+                <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center">
+                  <svg className="w-8 h-8 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold mb-2">Account Created!</h1>
-                  <p className="text-muted-foreground text-balance">
+                  <p className="text-default-500">
                     Please check your email for a verification link. You need to verify your email
                     before you can sign in.
                   </p>
                 </div>
                 <div className="text-center text-sm">
-                  Already verified?{' '}
+                  Already verified?{" "}
                   <Link
-                    href={`/auth/sign-in${inviteToken ? `?invite=${inviteToken}` : ''}`}
-                    className="underline underline-offset-4"
+                    href={`/auth/sign-in${inviteToken ? `?invite=${inviteToken}` : ""}`}
+                    className="text-primary underline"
                   >
                     Sign in
                   </Link>
                 </div>
               </div>
-            </div>
-            <div className="bg-muted relative hidden md:block">
+            </CardBody>
+            <div className="relative hidden md:block">
               <Image
-                src="/feedback-basket-login.png"
+                src="/images/auth-image.png"
                 alt="Authentication background"
                 fill
                 className="object-cover dark:brightness-[0.2] dark:grayscale"
                 priority
               />
             </div>
-          </CardContent>
+          </div>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={`flex flex-col gap-6 ${className ?? ""}`} {...props}>
       <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <div className="p-6 md:p-8">
+        <div className="grid p-0 md:grid-cols-2">
+          <CardBody className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Create your account</h1>
-                <p className="text-muted-foreground text-balance">
+                <p className="text-default-500">
                   {inviteToken
-                    ? 'Create an account to accept your team invitation'
-                    : 'Sign up for your FeedbackBasket account'}
+                    ? "Create an account to accept your team invitation"
+                    : "Sign up for your PictureMe AI account"}
                 </p>
               </div>
 
               {error && (
-                <div className="rounded-md bg-red-50 p-3 border border-red-200">
-                  <p className="text-sm text-red-600">{error}</p>
+                <div className="rounded-md bg-danger-50/20 p-3 border border-danger-200 text-danger-600 text-sm">
+                  {error}
                 </div>
               )}
 
               {/* Google Sign Up */}
               <div className="grid grid-cols-1 gap-4">
                 <Button
-                  variant="outline"
-                  type="button"
+                  variant="bordered"
+                  onPress={handleGoogleAuth}
+                  isDisabled={isLoading}
                   className="w-full"
-                  onClick={handleGoogleAuth}
-                  disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className="mr-2 h-4 w-4"
-                    >
-                      <path
-                        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  )}
-                  Sign up with Google
+                  <GoogleIcon className="mr-2" size={16} />
+                  Continue with Google
                 </Button>
               </div>
 
               <div className="relative">
-                <Separator />
-                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs text-muted-foreground uppercase">
+                <div className="border-t border-default-200" />
+                <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-content1 px-2 text-xs text-default-500 uppercase">
                   Or continue with email
                 </span>
               </div>
 
               {/* Email/Password Form */}
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>First name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="John" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Last name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Doe" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+              <form onSubmit={onSubmit} className="flex flex-col gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm">First name</label>
+                    <Input
+                      type="text"
+                      placeholder="John"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                     />
                   </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm">Last name</label>
+                    <Input
+                      type="text"
+                      placeholder="Doe"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="john@example.com"
-                            type="email"
-                            autoComplete="email"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm">Email</label>
+                  <Input
+                    type="email"
+                    placeholder="john@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
+                </div>
 
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="••••••••"
-                            type="password"
-                            autoComplete="new-password"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm">Password</label>
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
+                  <p className="text-xs text-default-400">
+                    At least 8 characters with uppercase, lowercase, and number
+                  </p>
+                </div>
 
-                  <Button type="submit" disabled={isLoading} className="w-full">
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating account...
-                      </>
-                    ) : (
-                      'Create account'
-                    )}
-                  </Button>
-                </form>
-              </Form>
+                <Button type="submit" isDisabled={isLoading} className="w-full">
+                  {isLoading ? "Creating account..." : "Create account"}
+                </Button>
+              </form>
 
               <div className="text-center text-sm">
-                Already have an account?{' '}
+                Already have an account?{" "}
                 <Link
-                  href={`/auth/sign-in${inviteToken ? `?invite=${inviteToken}` : ''}`}
-                  className="underline underline-offset-4"
+                  href={`/auth/sign-in${inviteToken ? `?invite=${inviteToken}` : ""}`}
+                  className="text-primary underline"
                 >
                   Sign in
                 </Link>
               </div>
             </div>
-          </div>
-          <div className="bg-muted relative hidden md:block">
+          </CardBody>
+          <div className="relative hidden md:block">
             <Image
-              src="/feedback-basket-login.png"
+              src="/images/auth-image.png"
               alt="Authentication background"
               fill
               className="object-cover dark:brightness-[0.2] dark:grayscale"
               priority
             />
           </div>
-        </CardContent>
+        </div>
       </Card>
-      <div className="text-muted-foreground text-center text-xs text-balance">
-        By clicking continue, you agree to our{' '}
-        <a href="/terms" className="underline underline-offset-4 hover:text-primary">
-          Terms of Service
-        </a>{' '}
-        and{' '}
-        <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
-          Privacy Policy
-        </a>
-        .
+      <div className="text-default-500 text-center text-xs">
+        By clicking continue, you agree to our{" "}
+        <a href="/terms" className="underline hover:text-primary transition-colors">Terms of Service</a> and{" "}
+        <a href="/privacy" className="underline hover:text-primary transition-colors">Privacy Policy</a>.
       </div>
     </div>
   );

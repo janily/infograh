@@ -1,99 +1,79 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { authClient } from '@/lib/auth-client';
-import { Loader2, ArrowLeft, Lock, CheckCircle, AlertTriangle } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { useState, useEffect, FormEvent } from "react";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Card, CardBody } from "@heroui/card";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
+import { authClient } from "@/lib/auth-client";
 
-// Form validation schema
-const resetPasswordSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, { message: 'Password must be at least 8 characters' })
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, {
-        message:
-          'Password must contain at least one uppercase letter, one lowercase letter, and one number',
-      }),
-    confirmPassword: z.string().min(8, { message: 'Password must be at least 8 characters' }),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
-
-type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
-
-interface ResetPasswordFormProps extends React.ComponentProps<'div'> {}
+interface ResetPasswordFormProps extends React.ComponentProps<"div"> {}
 
 export function ResetPasswordForm({ className, ...props }: ResetPasswordFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
 
   // Derive token and validation state from search params
-  const token = searchParams.get('token');
+  const token = searchParams.get("token");
   const isInvalidToken = !token;
-
-  // Form setup
-  const form = useForm<ResetPasswordFormData>({
-    resolver: zodResolver(resetPasswordSchema),
-    defaultValues: {
-      password: '',
-      confirmPassword: '',
-    },
-  });
 
   // Redirect to sign-in after successful password reset
   useEffect(() => {
     if (success) {
       const timeoutId = setTimeout(() => {
-        router.push('/auth/sign-in');
+        router.push("/auth/sign-in");
       }, 3000);
 
       return () => clearTimeout(timeoutId);
     }
   }, [success, router]);
 
-  const onSubmit = async (values: ResetPasswordFormData) => {
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     if (!token) return;
 
     setIsLoading(true);
     setError(null);
 
+    if (!password || !confirmPassword) {
+      setError("Both password fields are required.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { error } = await authClient.resetPassword({
-        newPassword: values.password,
+        newPassword: password,
         token,
       });
 
       if (error) {
-        setError(error.message || 'Failed to reset password');
+        setError(error.message || "Failed to reset password");
       } else {
         setSuccess(true);
       }
     } catch {
-      setError('An unexpected error occurred');
+      setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -102,36 +82,38 @@ export function ResetPasswordForm({ className, ...props }: ResetPasswordFormProp
   // Invalid token state
   if (isInvalidToken) {
     return (
-      <div className={cn('flex flex-col gap-6', className)} {...props}>
+      <div className={`flex flex-col gap-6 ${className ?? ""}`} {...props}>
         <Card className="overflow-hidden p-0">
-          <CardContent className="grid p-0 md:grid-cols-2">
-            <div className="p-6 md:p-8">
+          <div className="grid p-0 md:grid-cols-2">
+            <CardBody className="p-6 md:p-8">
               <div className="flex flex-col items-center text-center space-y-6">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-                  <AlertTriangle className="h-8 w-8 text-red-600" />
+                <div className="w-16 h-16 bg-danger-100 rounded-full flex items-center justify-center">
+                  <svg className="w-8 h-8 text-danger-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.232 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold mb-2">Invalid Reset Link</h1>
-                  <p className="text-muted-foreground text-balance">
+                  <p className="text-default-500">
                     The password reset link is invalid or has expired. Please request a new password
                     reset link.
                   </p>
                 </div>
-                <Button asChild className="w-full">
-                  <Link href="/auth/forgot-password">Request New Reset Link</Link>
+                <Button as={Link} href="/auth/forgot-password" className="w-full">
+                  Request New Reset Link
                 </Button>
               </div>
-            </div>
-            <div className="bg-muted relative hidden md:block">
+            </CardBody>
+            <div className="relative hidden md:block">
               <Image
-                src="/feedback-basket-login.png"
+                src="/images/auth-image.png"
                 alt="Authentication background"
                 fill
                 className="object-cover dark:brightness-[0.2] dark:grayscale"
                 priority
               />
             </div>
-          </CardContent>
+          </div>
         </Card>
       </div>
     );
@@ -140,156 +122,132 @@ export function ResetPasswordForm({ className, ...props }: ResetPasswordFormProp
   // Success state
   if (success) {
     return (
-      <div className={cn('flex flex-col gap-6', className)} {...props}>
+      <div className={`flex flex-col gap-6 ${className ?? ""}`} {...props}>
         <Card className="overflow-hidden p-0">
-          <CardContent className="grid p-0 md:grid-cols-2">
-            <div className="p-6 md:p-8">
+          <div className="grid p-0 md:grid-cols-2">
+            <CardBody className="p-6 md:p-8">
               <div className="flex flex-col items-center text-center space-y-6">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-8 w-8 text-green-600" />
+                <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center">
+                  <svg className="w-8 h-8 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold mb-2">Password Reset Successful</h1>
-                  <p className="text-muted-foreground text-balance">
-                    Your password has been reset successfully. You&apos;ll be redirected to the
+                  <p className="text-default-500">
+                    Your password has been reset successfully. You'll be redirected to the
                     sign-in page shortly.
                   </p>
                 </div>
-                <Button asChild className="w-full">
-                  <Link href="/auth/sign-in">Go to Sign In</Link>
+                <Button as={Link} href="/auth/sign-in" className="w-full">
+                  Go to Sign In
                 </Button>
               </div>
-            </div>
-            <div className="bg-muted relative hidden md:block">
+            </CardBody>
+            <div className="relative hidden md:block">
               <Image
-                src="/feedback-basket-login.png"
+                src="/images/auth-image.png"
                 alt="Authentication background"
                 fill
                 className="object-cover dark:brightness-[0.2] dark:grayscale"
                 priority
               />
             </div>
-          </CardContent>
+          </div>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={`flex flex-col gap-6 ${className ?? ""}`} {...props}>
       <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <div className="p-6 md:p-8">
+        <div className="grid p-0 md:grid-cols-2">
+          <CardBody className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="mb-2">
                 <Link
                   href="/auth/sign-in"
-                  className="inline-flex items-center text-sm text-muted-foreground hover:text-primary"
+                  className="inline-flex items-center text-sm text-default-500 hover:text-primary"
                 >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
                   Back to Sign In
                 </Link>
               </div>
 
               <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <Lock className="h-6 w-6 text-blue-600" />
+                <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 0h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
                 </div>
                 <h1 className="text-2xl font-bold">Create new password</h1>
-                <p className="text-muted-foreground text-balance">
+                <p className="text-default-500">
                   Please enter your new password below.
                 </p>
               </div>
 
               {error && (
-                <div className="rounded-md bg-red-50 p-3 border border-red-200">
-                  <p className="text-sm text-red-600">{error}</p>
+                <div className="rounded-md bg-danger-50/20 p-3 border border-danger-200 text-danger-600 text-sm">
+                  {error}
                 </div>
               )}
 
               {/* Password Reset Form */}
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>New Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="••••••••"
-                            type="password"
-                            autoComplete="new-password"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+              <form onSubmit={onSubmit} className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm">New Password</label>
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
+                  <p className="text-xs text-default-400">
+                    At least 8 characters with uppercase, lowercase, and number
+                  </p>
+                </div>
 
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="••••••••"
-                            type="password"
-                            autoComplete="new-password"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm">Confirm Password</label>
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
+                </div>
 
-                  <Button type="submit" disabled={isLoading} className="w-full">
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Resetting password...
-                      </>
-                    ) : (
-                      'Reset password'
-                    )}
-                  </Button>
-                </form>
-              </Form>
+                <Button type="submit" isDisabled={isLoading} className="w-full">
+                  {isLoading ? "Resetting password..." : "Reset password"}
+                </Button>
+              </form>
 
               <div className="text-center text-sm">
-                Remember your password?{' '}
-                <Link href="/auth/sign-in" className="underline underline-offset-4">
+                Remember your password?{" "}
+                <Link href="/auth/sign-in" className="text-primary underline">
                   Sign in
                 </Link>
               </div>
             </div>
-          </div>
-          <div className="bg-muted relative hidden md:block">
+          </CardBody>
+          <div className="relative hidden md:block">
             <Image
-              src="/feedback-basket-login.png"
+              src="/images/auth-image.png"
               alt="Authentication background"
               fill
               className="object-cover dark:brightness-[0.2] dark:grayscale"
               priority
             />
           </div>
-        </CardContent>
+        </div>
       </Card>
-      <div className="text-muted-foreground text-center text-xs text-balance">
-        By clicking continue, you agree to our{' '}
-        <a href="#" className="underline underline-offset-4 hover:text-primary">
-          Terms of Service
-        </a>{' '}
-        and{' '}
-        <a href="#" className="underline underline-offset-4 hover:text-primary">
-          Privacy Policy
-        </a>
-        .
+      <div className="text-default-500 text-center text-xs">
+        By clicking continue, you agree to our{" "}
+        <a href="/terms" className="underline hover:text-primary transition-colors">Terms of Service</a> and{" "}
+        <a href="/privacy" className="underline hover:text-primary transition-colors">Privacy Policy</a>.
       </div>
     </div>
   );

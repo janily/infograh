@@ -8,6 +8,7 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { GoogleIcon } from "@/components/icons";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 interface AuthSignInFormProps extends React.ComponentProps<"div"> {}
 
@@ -117,7 +118,7 @@ export function AuthSignInForm({ className, ...props }: AuthSignInFormProps) {
                 </Button>
               </div>
 
-              {/* <div className="relative">
+              <div className="relative">
                 <div className="border-t border-default-200" />
                 <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-content1 px-2 text-xs text-default-500 uppercase">
                   Or continue with email
@@ -158,7 +159,7 @@ export function AuthSignInForm({ className, ...props }: AuthSignInFormProps) {
                 <Link href={`/auth/sign-up${inviteToken ? `?invite=${inviteToken}` : ""}`} className="underline">
                   Sign up
                 </Link>
-              </div> */}
+              </div>
             </div>
           </CardBody>
           <div className="relative hidden md:block">
