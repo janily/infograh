@@ -84,7 +84,7 @@ export default defineConfig([
     rules: {
       // Next.js recommended rules
       ...nextPlugin.configs.recommended.rules,
-      
+
       'no-console': 'off', // Allow console statements for development
       'react/prop-types': 'off',
       'react/jsx-uses-react': 'off',

@@ -4,6 +4,8 @@ import { Link } from '@heroui/link';
 import Script from 'next/script';
 import clsx from 'clsx';
 
+import { GitHubIcon } from '@/components/icons/GitHubIcon';
+
 import { siteConfig } from '@/config/site';
 import { fontSans } from '@/config/fonts';
 import { ConditionalNavbar } from '@/components/conditional-navbar';
@@ -48,42 +50,48 @@ export default function RootLayout({
             <main className='pt-0 flex-grow snap-y snap-mandatory'>
               {children}
             </main>
-            <footer className='w-full flex items-center justify-center gap-3 py-3 border-t border-default-100 bg-default-50/50'>
-              <div className='flex flex-wrap items-center justify-center gap-3 text-xs'>
+            <footer className='w-full flex items-center justify-center py-2 border-t border-default-50'>
+              <div className='flex flex-wrap items-center justify-center gap-2 text-xs'>
                 <Link
-                  className='text-default-500 hover:text-primary transition-colors'
+                  className='text-default-400 hover:text-default-600 transition-colors'
                   href='/terms'
                 >
-                  Terms of Service
+                  Terms
                 </Link>
-                <span className='text-default-300'>•</span>
+                <span className='text-default-200'>•</span>
                 <Link
-                  className='text-default-500 hover:text-primary transition-colors'
+                  className='text-default-400 hover:text-default-600 transition-colors'
                   href='/privacy'
                 >
-                  Privacy Policy
+                  Privacy
                 </Link>
-                <span className='text-default-300'>•</span>
+                <span className='text-default-200'>•</span>
                 <Link
                   isExternal
-                  className='flex items-center gap-1 text-current hover:text-primary transition-colors'
+                  className='text-default-400 hover:text-default-600 transition-colors'
                   href='https://fal.ai'
-                  title='fal.ai homepage'
+                  title='Powered by FAL AI'
                 >
-                  <span className='text-default-500'>Powered by</span>
-                  <span className='text-default-700 font-medium'>FAL AI</span>
+                  FAL AI
                 </Link>
-                <span className='text-default-300'>•</span>
+                <span className='text-default-200'>•</span>
                 <Link
                   isExternal
-                  className='flex items-center gap-1 text-current hover:text-primary transition-colors'
+                  className='text-default-400 hover:text-default-600 transition-colors'
                   href='https://x.com/deifosv'
                   title='Built by Vlad'
                 >
-                  <span className='text-default-500'>Built with</span>
-                  <span>💛</span>
-                  <span className='text-default-500'>by</span>
-                  <span className='text-default-700 font-medium'>Vlad</span>
+                  @deifosv
+                </Link>
+                <span className='text-default-200'>•</span>
+                <Link
+                  isExternal
+                  className='flex items-center gap-1.5 text-default-700 hover:text-primary transition-colors font-medium bg-default-100 hover:bg-default-200 px-2 py-1 rounded-md'
+                  href='https://github.com/deifos/picturemeai_nextjs'
+                  title='View source code on GitHub'
+                >
+                  <GitHubIcon className='w-3.5 h-3.5' />
+                  <span>Open Source</span>
                 </Link>
               </div>
             </footer>

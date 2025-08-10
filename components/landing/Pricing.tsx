@@ -4,12 +4,13 @@ import { Card, CardBody, CardHeader } from '@heroui/card';
 import { Button } from '@heroui/button';
 import { motion, Variants } from 'framer-motion';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { title } from '@/components/primitives';
 import { redirectToCheckout } from '@/lib/stripe-client';
 import { ErrorToast } from '@/components/error-toast';
 import { useSession } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
+import { CREDITS_CONFIG } from '@/config/app-config';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -27,9 +28,9 @@ export function Pricing() {
   const [error, setError] = useState<string | null>(null);
 
   const handlePurchase = async (plan: 'STARTER' | 'CREATOR') => {
-
-    if(!session){
+    if (!session) {
       router.push('/auth/sign-in');
+
       return;
     }
     try {
@@ -102,7 +103,9 @@ export function Pricing() {
                 <div className='w-full'>
                   <div className='flex items-center justify-between mb-2'>
                     <div className='text-xl font-semibold'>Starter</div>
-                    <div className='text-3xl font-bold'>$12</div>
+                    <div className='text-3xl font-bold'>
+                      ${CREDITS_CONFIG.PACKAGES.STARTER.price / 100}
+                    </div>
                   </div>
                   <p className='text-default-500 text-sm'>
                     Perfect for personal use
@@ -116,7 +119,10 @@ export function Pricing() {
                     <ul className='space-y-2 text-sm'>
                       <li className='flex items-center gap-2'>
                         <span className='text-primary'>✓</span>
-                        <span>20 high-quality images</span>
+                        <span>
+                          {CREDITS_CONFIG.PACKAGES.STARTER.credits} high-quality
+                          images
+                        </span>
                       </li>
                       <li className='flex items-center gap-2'>
                         <span className='text-primary'>✓</span>
@@ -142,7 +148,9 @@ export function Pricing() {
                   </div>
                   <div className='pt-2'>
                     <div className='text-xs text-default-500 mb-4'>
-                      $0.60 per image • One-time payment
+                      $
+                      {CREDITS_CONFIG.PACKAGES.STARTER.pricePerImage.toFixed(2)}{' '}
+                      per image • One-time payment
                     </div>
                     <Button
                       className='w-full'
@@ -176,7 +184,9 @@ export function Pricing() {
                 <div className='w-full'>
                   <div className='flex items-center justify-between mb-2'>
                     <div className='text-xl font-semibold'>Creator</div>
-                    <div className='text-3xl font-bold'>$20</div>
+                    <div className='text-3xl font-bold'>
+                      ${CREDITS_CONFIG.PACKAGES.CREATOR.price / 100}
+                    </div>
                   </div>
                   <p className='text-default-500 text-sm'>
                     Best value for content creators
@@ -193,7 +203,8 @@ export function Pricing() {
                       <li className='flex items-center gap-2'>
                         <span className='text-primary'>✓</span>
                         <span className='font-medium'>
-                          40 high-quality images
+                          {CREDITS_CONFIG.PACKAGES.CREATOR.credits} high-quality
+                          images
                         </span>
                       </li>
                       <li className='flex items-center gap-2'>
@@ -222,7 +233,9 @@ export function Pricing() {
                   </div>
                   <div className='pt-2'>
                     <div className='text-xs text-default-500 mb-4'>
-                      $0.50 per image • One-time payment
+                      $
+                      {CREDITS_CONFIG.PACKAGES.CREATOR.pricePerImage.toFixed(2)}{' '}
+                      per image • One-time payment
                     </div>
                     <Button
                       className='w-full'

@@ -146,24 +146,18 @@ export function FAQ() {
               Still have questions?
             </h3>
             <p className='text-default-600 mb-4'>
-              Can&apos;t find what you&apos;re looking for? Reach out to me on X
-              or use the feedback bubble on the site.
+              Can&apos;t find what you&apos;re looking for? Reach out to me on X.
             </p>
-            <div className='flex items-center justify-center gap-4 text-sm'>
+            <div className='flex items-center justify-center'>
               <Link
                 isExternal
                 showAnchorIcon
-                className='flex items-center gap-2 text-default-600 hover:text-primary transition-colors'
+                className='flex items-center gap-2 text-default-600 hover:text-primary transition-colors font-medium'
                 href='https://x.com/deifosv'
               >
-                <XIcon size={16} />
-                <span>Message me on X</span>
+                <XIcon size={18} />
+                <span>Reach out to me on X</span>
               </Link>
-              <span className='text-default-300'>•</span>
-              <div className='flex items-center gap-2 text-default-500'>
-                <span>💬</span>
-                <span>Use feedback bubble</span>
-              </div>
             </div>
           </div>
         </motion.div>

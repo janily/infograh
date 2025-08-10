@@ -1,45 +1,38 @@
 'use client';
 
-import type { Selection } from '@react-types/shared';
-
-import { useMemo, useRef, useState, useEffect } from 'react';
-import { Card, CardBody, CardHeader } from '@heroui/card';
-import { Input, Textarea } from '@heroui/input';
-import { Button } from '@heroui/button';
-import { Link } from '@heroui/link';
-import { Select, SelectItem } from '@heroui/select';
-import { Spinner } from '@heroui/spinner';
+import { useMemo, useState, useEffect } from 'react';
+import { Card } from '@heroui/card';
 
 import {
   generateWithFal,
-  uploadToFal,
   type IdeogramStyle,
   type ImageSize,
 } from '@/lib/fal-client';
-import {
-  ALL_CATEGORIES,
-  PROMPT_LIBRARY,
-  type PromptCategory,
-} from '@/lib/prompt-presets';
+import { PROMPT_LIBRARY, type PromptCategory } from '@/lib/prompt-presets';
 import { ErrorBoundary } from '@/components/error-boundary';
-import { SafeImage } from '@/components/safe-image';
-import { ImageLightbox } from '@/components/image-lightbox';
 import { useSession } from '@/lib/auth-client';
 import { useCreditsStore } from '@/lib/credits-store';
+import { ImageUploadSection } from '@/components/dashboard/ImageUploadSection';
+import { GenerationSettingsPanel } from '@/components/dashboard/GenerationSettingsPanel';
+import { GeneratedGallery } from '@/components/dashboard/GeneratedGallery';
+import { API_CONFIG, CREDITS_CONFIG } from '@/config/app-config';
 
 type GeneratedItem = { id: string; url: string };
 
 export function DashboardClient() {
   const { data: session } = useSession();
   const { credits, decrementCredits } = useCreditsStore();
-  const fileRef = useRef<HTMLInputElement | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [referenceUrl, setReferenceUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [items, setItems] = useState<GeneratedItem[]>([]);
   const [category, setCategory] = useState<PromptCategory>('Professional');
-  const [style, setStyle] = useState<IdeogramStyle>('AUTO');
-  const [imageSize, setImageSize] = useState<ImageSize>('square_hd'); // Default to square
+  const [style, setStyle] = useState<IdeogramStyle>(
+    CREDITS_CONFIG.DEFAULT_STYLE
+  );
+  const [imageSize, setImageSize] = useState<ImageSize>(
+    CREDITS_CONFIG.DEFAULT_IMAGE_SIZE
+  );
   const [prompt, setPrompt] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loadingSpinners, setLoadingSpinners] = useState<string[]>([]);
@@ -77,7 +70,7 @@ export function DashboardClient() {
   const loadExistingGenerations = async () => {
     try {
       setIsLoadingExisting(true);
-      const response = await fetch('/api/user/generations');
+      const response = await fetch(API_CONFIG.ENDPOINTS.USER_GENERATIONS);
 
       if (response.ok) {
         const data = await response.json();
@@ -97,23 +90,6 @@ export function DashboardClient() {
     } finally {
       setIsLoadingExisting(false);
     }
-  };
-
-  const handleFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const file = evt.target.files?.[0];
-
-    if (!file) {
-      setPreviewUrl(null);
-      setReferenceUrl(null);
-
-      return;
-    }
-    const url = URL.createObjectURL(file);
-
-    setPreviewUrl(url);
-    uploadToFal(file)
-      .then(remoteUrl => setReferenceUrl(remoteUrl))
-      .catch(() => setReferenceUrl(null));
   };
 
   const handleGenerate = async () => {
@@ -163,7 +139,7 @@ export function DashboardClient() {
 
         // Record the generation in the database
         try {
-          const response = await fetch('/api/generate', {
+          const response = await fetch(API_CONFIG.ENDPOINTS.RECORD_GENERATION, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -171,18 +147,18 @@ export function DashboardClient() {
             body: JSON.stringify({
               prompt: promptToUse,
               category,
-              numImages: 1,
+              numImages: CREDITS_CONFIG.DEFAULT_NUM_IMAGES,
               imageUrls: [result.images[0].url],
               imageSize: imageSize,
               style: style,
-              renderingSpeed: 'BALANCED',
+              renderingSpeed: CREDITS_CONFIG.DEFAULT_RENDERING_SPEED,
               falRequestId: result.requestId,
             }),
           });
 
           if (response.ok) {
             // Decrement credits in store
-            decrementCredits(1);
+            decrementCredits(CREDITS_CONFIG.COST_PER_GENERATION);
           } else if (response.status === 402) {
             throw new Error(
               'Insufficient credits. Please purchase more credits to continue generating images.'
@@ -217,323 +193,40 @@ export function DashboardClient() {
             <div className='grid grid-cols-1 lg:grid-cols-12 gap-8'>
               <div className='lg:col-span-4 xl:col-span-3'>
                 <div className='lg:sticky lg:top-20 flex flex-col gap-6'>
+                  <ImageUploadSection
+                    error={error}
+                    previewUrl={previewUrl}
+                    onPreviewChange={setPreviewUrl}
+                    onReferenceChange={setReferenceUrl}
+                  />
                   <Card className='bg-content1/60 border border-default-100'>
-                    <CardHeader className='text-large font-semibold'>
-                      Upload
-                    </CardHeader>
-                    <CardBody className='flex flex-col gap-6'>
-                      <Input
-                        ref={fileRef as any}
-                        accept='image/*'
-                        aria-label='Upload your image'
-                        type='file'
-                        onChange={handleFileChange}
+                    <div className='p-6 flex flex-col gap-6'>
+                      <GenerationSettingsPanel
+                        canGenerate={canGenerate}
+                        category={category}
+                        credits={credits}
+                        imageSize={imageSize}
+                        isGenerating={isGenerating}
+                        prompt={prompt}
+                        style={style}
+                        onCategoryChange={setCategory}
+                        onGenerate={handleGenerate}
+                        onImageSizeChange={setImageSize}
+                        onLoadRandomPrompt={loadRandomPrompt}
+                        onPromptChange={setPrompt}
+                        onStyleChange={setStyle}
                       />
-
-                      {previewUrl && (
-                        <div className='flex justify-center'>
-                          <div className='relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden border border-default-100 bg-content2/50'>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              alt='Preview'
-                              className='object-contain object-center w-full h-full'
-                              src={previewUrl}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {error && (
-                        <Card className='border-danger-200 bg-danger-50'>
-                          <CardBody className='text-center'>
-                            <p className='text-danger text-sm'>{error}</p>
-                          </CardBody>
-                        </Card>
-                      )}
-
-                      <div className='flex w-full flex-col gap-4'>
-                        <Select
-                          className='w-full'
-                          label='Category'
-                          selectedKeys={[category]}
-                          onSelectionChange={(keys: Selection) => {
-                            const key = Array.from(
-                              keys as Set<string>
-                            )[0] as PromptCategory;
-
-                            setCategory(key);
-                            // Prompt will be auto-populated by useEffect
-                          }}
-                        >
-                          {ALL_CATEGORIES.map(cat => (
-                            <SelectItem key={cat}>{cat}</SelectItem>
-                          ))}
-                        </Select>
-
-                        <div className='flex flex-col gap-2'>
-                          <label
-                            className='text-sm font-medium text-foreground'
-                            htmlFor='style-buttons'
-                          >
-                            Style
-                          </label>
-                          <div
-                            aria-labelledby='style-label'
-                            className='flex flex-wrap gap-2 justify-center'
-                            id='style-buttons'
-                            role='group'
-                          >
-                            {(
-                              [
-                                'AUTO',
-                                'REALISTIC',
-                                'FICTION',
-                              ] as IdeogramStyle[]
-                            ).map(styleOption => (
-                              <Button
-                                key={styleOption}
-                                aria-pressed={style === styleOption}
-                                className='min-w-[80px]'
-                                color={
-                                  style === styleOption ? 'primary' : 'default'
-                                }
-                                size='sm'
-                                variant={
-                                  style === styleOption ? 'solid' : 'bordered'
-                                }
-                                onPress={() => setStyle(styleOption)}
-                              >
-                                {styleOption === 'AUTO'
-                                  ? 'Auto'
-                                  : styleOption === 'REALISTIC'
-                                    ? 'Realistic'
-                                    : 'Fiction'}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className='flex flex-col gap-2'>
-                          <label
-                            className='text-sm font-medium text-foreground'
-                            htmlFor='image-size-buttons'
-                          >
-                            Image Size
-                          </label>
-                          <div
-                            aria-labelledby='image-size-label'
-                            className='flex flex-wrap gap-2 justify-center'
-                            id='image-size-buttons'
-                            role='group'
-                          >
-                            {(
-                              [
-                                {
-                                  value: 'portrait_16_9' as ImageSize,
-                                  label: 'Portrait',
-                                },
-                                {
-                                  value: 'square_hd' as ImageSize,
-                                  label: 'Square',
-                                },
-                                {
-                                  value: 'landscape_16_9' as ImageSize,
-                                  label: 'Landscape',
-                                },
-                              ] as const
-                            ).map(sizeOption => (
-                              <Button
-                                key={sizeOption.value}
-                                aria-pressed={imageSize === sizeOption.value}
-                                className='min-w-[80px]'
-                                color={
-                                  imageSize === sizeOption.value
-                                    ? 'primary'
-                                    : 'default'
-                                }
-                                size='sm'
-                                variant={
-                                  imageSize === sizeOption.value
-                                    ? 'solid'
-                                    : 'bordered'
-                                }
-                                onPress={() => setImageSize(sizeOption.value)}
-                              >
-                                {/* <span className="mr-1">{sizeOption.icon}</span> */}
-                                {sizeOption.label}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className='relative'>
-                        <Textarea
-                          aria-label='Custom prompt'
-                          description='Auto-generated prompt from selected category. Edit or refresh for variations.'
-                          label='Prompt'
-                          minRows={3}
-                          value={prompt}
-                          onChange={e => setPrompt(e.target.value)}
-                        />
-                        <Button
-                          isIconOnly
-                          className='absolute top-1 right-1 z-10'
-                          size='sm'
-                          title='Get a different prompt from this category'
-                          variant='light'
-                          onPress={loadRandomPrompt}
-                        >
-                          <svg
-                            className='w-4 h-4'
-                            fill='none'
-                            stroke='currentColor'
-                            viewBox='0 0 24 24'
-                          >
-                            <path
-                              d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth={2}
-                            />
-                          </svg>
-                        </Button>
-                      </div>
-
-                      <Button
-                        color='primary'
-                        isDisabled={!canGenerate || isGenerating}
-                        size='lg'
-                        onPress={handleGenerate}
-                      >
-                        {isGenerating
-                          ? 'Generating…'
-                          : !previewUrl
-                            ? 'Upload image to generate'
-                            : credits === null || credits <= 0
-                              ? 'No credits available'
-                              : 'Generate'}
-                      </Button>
-
-                      {/* Show credits warning when low */}
-                      {credits !== null && credits <= 0 && (
-                        <div className='text-center'>
-                          <p className='text-danger text-sm mb-2'>
-                            You have no credits remaining.
-                          </p>
-                          <Button
-                            as={Link}
-                            color='primary'
-                            href='/#pricing'
-                            size='lg'
-                            variant='bordered'
-                          >
-                            Buy Credits
-                          </Button>
-                        </div>
-                      )}
-                    </CardBody>
+                    </div>
                   </Card>
                 </div>
               </div>
 
               <div className='lg:col-span-8 xl:col-span-9'>
-                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                  {/* Loading spinners for images being generated */}
-                  {loadingSpinners.map(spinnerId => (
-                    <div
-                      key={spinnerId}
-                      className='relative aspect-square overflow-hidden rounded-xl border border-default-100 bg-content2/50 flex items-center justify-center'
-                    >
-                      <Spinner color='primary' size='lg' />
-                    </div>
-                  ))}
-
-                  {/* Generated images */}
-                  {items.map(it => (
-                    <ErrorBoundary
-                      key={it.id}
-                      fallback={
-                        <Card className='aspect-square'>
-                          <CardBody className='flex items-center justify-center'>
-                            <p className='text-danger text-sm'>
-                              Failed to load image
-                            </p>
-                          </CardBody>
-                        </Card>
-                      }
-                    >
-                      <ImageLightbox alt='Generated image' src={it.url}>
-                        <div className='relative aspect-square overflow-hidden rounded-xl border border-default-100 bg-content2/50 group'>
-                          <SafeImage
-                            fill
-                            alt='Generated'
-                            className='object-contain object-center transition-transform group-hover:scale-105'
-                            src={it.url}
-                          />
-
-                          {/* Hover overlay */}
-                          <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100'>
-                            <div className='bg-white/90 backdrop-blur-sm rounded-full p-2'>
-                              <svg
-                                className='w-6 h-6 text-gray-800'
-                                fill='none'
-                                stroke='currentColor'
-                                viewBox='0 0 24 24'
-                              >
-                                <path
-                                  d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7'
-                                  strokeLinecap='round'
-                                  strokeLinejoin='round'
-                                  strokeWidth={2}
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-                      </ImageLightbox>
-                    </ErrorBoundary>
-                  ))}
-
-                  {/* Loading state for existing images */}
-                  {isLoadingExisting && (
-                    <>
-                      {Array.from({ length: 6 }).map((_, i) => (
-                        <div
-                          key={`loading-${i}`}
-                          className='relative aspect-square overflow-hidden rounded-xl border border-default-100 bg-content2/50 flex items-center justify-center'
-                        >
-                          <Spinner color='default' size='lg' />
-                        </div>
-                      ))}
-                    </>
-                  )}
-
-                  {/* Empty state */}
-                  {!isLoadingExisting &&
-                    items.length === 0 &&
-                    loadingSpinners.length === 0 && (
-                      <div className='col-span-full'>
-                        <div className='min-h-[50vh] flex flex-col items-center justify-center gap-6 text-center'>
-                          <p className='text-default-500 text-sm'>
-                            Your generated images will appear here. Upload an
-                            image and click Generate to create unique
-                            variations. Each generation creates one unique
-                            image.
-                          </p>
-                          <div className='grid grid-cols-3 gap-4 w-full max-w-xl'>
-                            {Array.from({ length: 6 }).map((_, i) => (
-                              <div
-                                key={i}
-                                aria-hidden
-                                className='relative aspect-square rounded-xl border-2 border-dashed border-default-200 bg-content2/40'
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                </div>
+                <GeneratedGallery
+                  isLoadingExisting={isLoadingExisting}
+                  items={items}
+                  loadingSpinners={loadingSpinners}
+                />
               </div>
             </div>
           </div>
