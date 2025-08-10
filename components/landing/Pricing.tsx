@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { title } from '@/components/primitives';
 import { redirectToCheckout } from '@/lib/stripe-client';
 import { ErrorToast } from '@/components/error-toast';
+import { useSession } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -19,10 +21,17 @@ const fadeUp: Variants = {
 };
 
 export function Pricing() {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handlePurchase = async (plan: 'STARTER' | 'CREATOR') => {
+
+    if(!session){
+      router.push('/auth/sign-in');
+      return;
+    }
     try {
       setLoadingPlan(plan);
       setError(null);
