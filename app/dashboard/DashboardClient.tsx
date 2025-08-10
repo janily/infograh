@@ -8,7 +8,7 @@ import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Select, SelectItem } from "@heroui/select";
 import type { Selection } from "@react-types/shared";
-import { generateWithFal, uploadToFal, type IdeogramStyle } from "@/lib/fal-client";
+import { generateWithFal, uploadToFal, type IdeogramStyle, type ImageSize } from "@/lib/fal-client";
 import { ALL_CATEGORIES, PROMPT_LIBRARY, type PromptCategory } from "@/lib/prompt-presets";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { SafeImage } from "@/components/safe-image";
@@ -29,6 +29,7 @@ export function DashboardClient() {
   const [items, setItems] = useState<GeneratedItem[]>([]);
   const [category, setCategory] = useState<PromptCategory>("Professional");
   const [style, setStyle] = useState<IdeogramStyle>("AUTO");
+  const [imageSize, setImageSize] = useState<ImageSize>("square_hd"); // Default to square
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [loadingSpinners, setLoadingSpinners] = useState<string[]>([]);
@@ -120,7 +121,7 @@ export function DashboardClient() {
       const result = await generateWithFal({
         prompt: promptToUse,
         numImages: 1, // Always generate single image
-        imageSize: "square_hd",
+        imageSize: imageSize,
         style: style,
         renderingSpeed: "BALANCED",
         referenceImageUrl: referenceUrl ?? undefined,
@@ -143,7 +144,7 @@ export function DashboardClient() {
               category,
               numImages: 1,
               imageUrls: [result.images[0].url],
-              imageSize: "square_hd",
+              imageSize: imageSize,
               style: style,
               renderingSpeed: "BALANCED",
               falRequestId: result.requestId,
@@ -243,6 +244,29 @@ export function DashboardClient() {
                         ))}
                       </div>
                     </div>
+
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-medium text-foreground">Image Size</label>
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        {([
+                          { value: "portrait_16_9" as ImageSize, label: "Portrait" },
+                          { value: "square_hd" as ImageSize, label: "Square" },
+                          { value: "landscape_16_9" as ImageSize, label: "Landscape" }
+                        ] as const).map((sizeOption) => (
+                          <Button
+                            key={sizeOption.value}
+                            size="sm"
+                            variant={imageSize === sizeOption.value ? "solid" : "bordered"}
+                            color={imageSize === sizeOption.value ? "primary" : "default"}
+                            onPress={() => setImageSize(sizeOption.value)}
+                            className="min-w-[80px]"
+                          >
+                            {/* <span className="mr-1">{sizeOption.icon}</span> */}
+                            {sizeOption.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="relative">
@@ -302,16 +326,14 @@ export function DashboardClient() {
                         as={Link} 
                         href="/#pricing" 
                         color="primary" 
-                        size="sm"
-                        variant="flat"
+                        size="lg"
+                        variant="bordered"
                       >
                         Buy Credits
                       </Button>
                     </div>
                   )}
-                  {/* <Button variant="light" size="sm" onPress={handleClear} isDisabled={items.length === 0}>
-                    Clear results
-                  </Button> */}
+                  
                 </CardBody>
                 </Card>
               </div>
