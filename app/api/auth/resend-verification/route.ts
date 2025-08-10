@@ -29,11 +29,17 @@ function checkRateLimit(identifier: string): boolean {
 // Cleanup old entries to prevent memory leaks
 function cleanupOldEntries(): void {
   const now = Date.now();
-  for (const [key, tracker] of requestTracker.entries()) {
+  const keysToDelete: string[] = [];
+  
+  requestTracker.forEach((tracker, key) => {
     if (now - tracker.lastReset > RATE_WINDOW) {
-      requestTracker.delete(key);
+      keysToDelete.push(key);
     }
-  }
+  });
+  
+  keysToDelete.forEach(key => {
+    requestTracker.delete(key);
+  });
 }
 
 export async function POST(req: NextRequest) {

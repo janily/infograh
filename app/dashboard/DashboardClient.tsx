@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useRef, useState, useEffect } from "react";
-import Image from "next/image";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input, Textarea } from "@heroui/input";
 import { Button } from "@heroui/button";
