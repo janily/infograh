@@ -217,8 +217,7 @@ export function Pricing() {
                 </div>
                 <div className='pt-6'>
                   <div className='text-xs text-default-500 mb-4'>
-                    ${CREDITS_CONFIG.PACKAGES.STARTER.pricePerImage.toFixed(2)}{' '}
-                    per image • One-time payment
+                    One-time payment
                   </div>
                   <Button
                     className='w-full'
@@ -301,8 +300,7 @@ export function Pricing() {
                 </div>
                 <div className='pt-6'>
                   <div className='text-xs text-default-500 mb-4'>
-                    ${CREDITS_CONFIG.PACKAGES.CREATOR.pricePerImage.toFixed(2)}{' '}
-                    per image • One-time payment
+                    One-time payment
                   </div>
                   <Button
                     className='w-full'
