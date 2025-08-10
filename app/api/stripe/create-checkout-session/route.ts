@@ -77,8 +77,8 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/dashboard?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/?canceled=true`,
       metadata: {
         userId: session.user.id,
         productName,

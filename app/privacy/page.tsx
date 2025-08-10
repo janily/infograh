@@ -81,8 +81,27 @@ const PrivacyPolicy: React.FC = () => {
               <li>Images are processed securely and temporarily</li>
               <li>Generated images are stored for your account access</li>
               <li>We do not use your images for marketing or other purposes</li>
-              <li>You can delete your generated images at any time</li>
+              <li>
+                You can delete your generated images from your account at any
+                time
+              </li>
             </ul>
+
+            <p className='mb-6 text-default-600'>
+              Note: Deleting images in PictureMe AI removes them from your
+              account and our application storage. Image generation and
+              temporary storage are handled by our provider, FAL.ai, which may
+              retain generated assets for approximately 7 days for operational
+              purposes. See their privacy policy:{' '}
+              <Link
+                isExternal
+                className='text-primary hover:text-primary/80'
+                href='https://fal.ai/privacy'
+              >
+                https://fal.ai/privacy
+              </Link>
+              .
+            </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
               4. Data Sharing and Third Parties

@@ -33,8 +33,21 @@ export function FAQ() {
     {
       key: 'image-storage',
       title: 'How long are my images stored? Do I need to download them?',
-      content:
-        'Generated images are automatically deleted from our servers after 48 hours for privacy and storage management. We strongly recommend downloading all your images immediately after generation. You can download individual images or use the bulk download feature (available for Creator package users) to get all your images in a ZIP file.',
+      content: (
+        <>
+          Generated image records/URLs are removed from your PictureMe AI
+          account after 48 hours for privacy and storage management. Image
+          generation and temporary storage are handled by our provider, FAL.ai,
+          which usually retains generated assets for approximately 7 days. See:{' '}
+          <Link isExternal href='https://fal.ai/privacy'>
+            https://fal.ai/privacy
+          </Link>
+          . We strongly recommend downloading your images immediately after
+          generation. You can download individual images or use the bulk
+          download feature (available for Creator package users) to get all
+          images in a ZIP file.
+        </>
+      ),
     },
     {
       key: 'image-quality',
@@ -69,8 +82,21 @@ export function FAQ() {
     {
       key: 'privacy-security',
       title: 'Is my uploaded photo secure and private?',
-      content:
-        "Yes, we take privacy seriously. Your uploaded photos are processed securely and used only for generating your requested images. We don't store your original photos longer than necessary for processing, and we never use your images for marketing or training purposes. All generated images are automatically deleted after 48 hours.",
+      content: (
+        <>
+          Yes, we take privacy seriously. Your uploaded photos are processed
+          securely and used only for generating your requested images. We
+          don&apos;t store your original photos longer than necessary for
+          processing, and we never use your images for marketing or training
+          purposes. Image processing and temporary storage are handled by our
+          generation provider, FAL.ai. Generated assets are usually deleted by
+          FAL after approximately 7 days — see their privacy policy:{' '}
+          <Link isExternal href='https://fal.ai/privacy'>
+            https://fal.ai/privacy
+          </Link>
+          .
+        </>
+      ),
     },
     {
       key: 'styles-categories',

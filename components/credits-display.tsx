@@ -49,30 +49,41 @@ export function CreditsDisplay({
   }
 
   if (compact) {
+    const zeroCredits = creditInfo === null || creditInfo?.total === 0;
+
     return (
       <div className='flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-primary-50 to-secondary-50 border border-primary-200 rounded-full'>
-        <span className='text-xs text-default-600'>Credits:</span>
-        <div className='flex items-center gap-1'>
-          {creditInfo ? (
-            <>
-              {creditInfo.freeCredits > 0 ? (
-                <span className='text-xs text-success font-medium'>
-                  {creditInfo.freeCredits} free + {creditInfo.paidCredits}
-                </span>
-              ) : (
-                <span className='text-sm font-bold text-primary'>
-                  {creditInfo.total}
-                </span>
-              )}
-            </>
-          ) : (
-            <span className='text-sm font-bold text-primary'>0</span>
-          )}
+        {/* Credits label and value: hide on mobile if zero credits to avoid overflow */}
+        <div
+          className={
+            zeroCredits
+              ? 'hidden sm:flex items-center gap-2'
+              : 'flex items-center gap-2'
+          }
+        >
+          <span className='text-xs text-default-600'>Credits:</span>
+          <div className='flex items-center gap-1'>
+            {creditInfo ? (
+              <>
+                {creditInfo.freeCredits > 0 ? (
+                  <span className='text-xs text-success font-medium'>
+                    {creditInfo.freeCredits} free + {creditInfo.paidCredits}
+                  </span>
+                ) : (
+                  <span className='text-sm font-bold text-primary'>
+                    {creditInfo.total}
+                  </span>
+                )}
+              </>
+            ) : (
+              <span className='text-sm font-bold text-primary'>0</span>
+            )}
+          </div>
         </div>
-        {(creditInfo === null || creditInfo?.total === 0) && (
+        {zeroCredits && (
           <Button
             as={Link}
-            className='ml-2 h-6 px-2 text-xs'
+            className='ml-0 sm:ml-2 h-6 px-2 text-xs'
             color='primary'
             href='/#pricing'
             size='sm'
