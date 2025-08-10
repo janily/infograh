@@ -25,8 +25,8 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins:
-    process.env.NODE_ENV === 'production'
-      ? [process.env.NEXT_PUBLIC_APP_URL || '']
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_APP_URL
+      ? [process.env.NEXT_PUBLIC_APP_URL]
       : undefined,
   emailAndPassword: {
     enabled: true,
