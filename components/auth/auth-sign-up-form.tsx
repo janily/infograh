@@ -90,7 +90,7 @@ export function AuthSignUpForm({ className, ...props }: AuthSignUpFormProps) {
           onSuccess: () => {
             setSuccess(true);
           },
-          onError: (ctx: any) =>
+          onError: (ctx: { error: { message?: string } }) =>
             setError(ctx.error.message || 'Sign up failed'),
         }
       );

@@ -92,7 +92,7 @@ export function AuthSignInForm({ className, ...props }: AuthSignInFormProps) {
               else router.push('/dashboard');
             }
           },
-          onError: (ctx: any) => {
+          onError: (ctx: { error?: { message?: string } }) => {
             const errorMessage = ctx?.error?.message || 'Sign in failed';
 
             console.log('Better-auth sign-in error:', errorMessage);

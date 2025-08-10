@@ -6,7 +6,6 @@ import clsx from 'clsx';
 
 import { GitHubIcon } from '@/components/icons/GitHubIcon';
 import { XIcon } from '@/components/icons/XIcon';
-
 import { siteConfig } from '@/config/site';
 import { fontSans } from '@/config/fonts';
 import { ConditionalNavbar } from '@/components/conditional-navbar';

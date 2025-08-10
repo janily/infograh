@@ -147,14 +147,11 @@ export function FAQ() {
             </h3>
             <p className='text-default-600 mb-4'>
               Can&apos;t find what you&apos;re looking for? Reach out to me on{' '}
-              <Link
-                isExternal
-                href='https://x.com/deifosv'
-              >
+              <Link isExternal href='https://x.com/deifosv'>
                 {' '}
                 <XIcon className='w-4 h-4' />
-              </Link>
-              {' '}or through the feedback bubble.
+              </Link>{' '}
+              or through the feedback bubble.
             </p>
           </div>
         </motion.div>

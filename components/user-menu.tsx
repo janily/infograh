@@ -81,8 +81,7 @@ export function UserMenu() {
         <DropdownItem key='dashboard' as={NextLink} href='/dashboard'>
           Dashboard
         </DropdownItem>
-        <DropdownItem key='settings'>Settings</DropdownItem>
-        <DropdownItem key='help'>Help & Feedback</DropdownItem>
+
         <DropdownItem key='logout' color='danger' onPress={handleLogout}>
           Log Out
         </DropdownItem>

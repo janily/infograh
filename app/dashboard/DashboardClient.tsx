@@ -76,7 +76,7 @@ export function DashboardClient() {
         const data = await response.json();
         // Convert generations to items format
         const existingItems: GeneratedItem[] = data.generations.flatMap(
-          (gen: any) =>
+          (gen: { id: string; imageUrls: string[] }) =>
             gen.imageUrls.map((url: string, idx: number) => ({
               id: `${gen.id}-${idx}`,
               url: url,

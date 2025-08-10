@@ -27,7 +27,7 @@ export function SmoothScrollLink({
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleClick = (e: any) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Check if it's a hash link
     if (href.startsWith('/#')) {
       e.preventDefault();

@@ -7,7 +7,7 @@ export type FalGenerationParams = {
   referenceImageUrl?: string;
   imageSize?: ImageSize;
   style?: IdeogramStyle;
-  renderingSpeed?: 'BALANCED' | 'QUALITY' | 'SPEED';
+  renderingSpeed?: 'BALANCED' | 'QUALITY' | 'TURBO';
 };
 
 export type FalGenerationResult = {
@@ -58,7 +58,7 @@ export async function generateWithFal(
     },
   });
 
-  const images = (result?.data?.images || []).map((img: any) => ({
+  const images = (result?.data?.images || []).map((img: { url: string }) => ({
     url: img.url,
   })) as { url: string }[];
 
