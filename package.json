@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "NODE_OPTIONS='--no-deprecation' next build",
     "start": "next start",
+    "postinstall": "prisma generate",
     "lint": "eslint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -200,6 +200,8 @@ All hardcoded values are centralized in \`config/app-config.ts\`:
 2. Configure environment variables in Vercel dashboard
 3. Deploy automatically on push to main branch
 
+> **Note**: The `postinstall` script automatically runs `prisma generate` during deployment to ensure the Prisma client is available.
+
 ### Stripe Webhook Setup
 
 **Important**: Configure webhooks in your Stripe Dashboard for payments to work:
