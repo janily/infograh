@@ -181,25 +181,67 @@ export function DashboardClient() {
 
       const result = await response.json();
 
-      // The API returns an ID, we might need to poll for results
-      // For now, we'll handle the result based on the API response structure
+      // The API returns an ID for polling
       if (result.data?.id) {
-        // Task ID returned, would need polling logic here
-        console.log('Infographic task started with ID:', result.data.id);
-        setError(
-          'Infographic generation started. Polling for results not yet implemented.'
-        );
+        const taskId = result.data.id;
+
+        console.log('Infographic task started with ID:', taskId);
+
+        // Poll for results
+        const pollInterval = setInterval(async () => {
+          try {
+            const pollResponse = await fetch(
+              `${API_CONFIG.ENDPOINTS.POLL_INFOGRAPHIC}?taskId=${taskId}`
+            );
+            const pollData = await pollResponse.json();
+
+            if (
+              pollData.data?.status === 'succeeded' &&
+              pollData.data?.results?.[0]?.url
+            ) {
+              clearInterval(pollInterval);
+              const newItem = {
+                id: taskId,
+                url: pollData.data.results[0].url,
+              };
+
+              setItems(prev => [newItem, ...prev]);
+              setLoadingSpinners([]);
+              setIsGenerating(false);
+            } else if (pollData.data?.status === 'failed') {
+              clearInterval(pollInterval);
+              setError(
+                pollData.data?.failure_reason || 'Infographic generation failed'
+              );
+              setLoadingSpinners([]);
+              setIsGenerating(false);
+            }
+          } catch (pollError) {
+            console.error('Polling error:', pollError);
+            // Continue polling despite errors
+          }
+        }, 3000); // Poll every 3 seconds
+
+        // Stop polling after 5 minutes
+        setTimeout(() => {
+          clearInterval(pollInterval);
+          setError('Infographic generation timed out. Please try again.');
+          setLoadingSpinners([]);
+          setIsGenerating(false);
+        }, 300000);
       } else if (result.data?.results?.[0]?.url) {
-        // Direct result returned
+        // Direct result returned (stream mode)
         const newItem = {
           id: result.data.id || `infographic-${Date.now()}`,
           url: result.data.results[0].url,
         };
 
         setItems(prev => [newItem, ...prev]);
+        setLoadingSpinners([]);
+        setIsGenerating(false);
+      } else {
+        throw new Error('Unexpected response format from API');
       }
-
-      setLoadingSpinners([]);
     } catch (err) {
       console.error('Generation error:', err);
       const errorMessage =
@@ -208,9 +250,8 @@ export function DashboardClient() {
           : 'Failed to generate infographic. Please try again.';
 
       setError(errorMessage);
-    } finally {
-      setIsGenerating(false);
       setLoadingSpinners([]);
+      setIsGenerating(false);
     }
   };
 

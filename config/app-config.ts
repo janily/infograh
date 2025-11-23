@@ -46,6 +46,7 @@ export const API_CONFIG = {
     AUTH_RESEND_VERIFICATION: '/api/auth/resend-verification',
     FETCH_CONTENT: '/api/fetch-content',
     GENERATE_INFOGRAPHIC: '/api/generate-infographic',
+    POLL_INFOGRAPHIC: '/api/poll-infographic',
   },
 
   // External services
