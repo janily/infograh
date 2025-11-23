@@ -15,6 +15,7 @@ import { InfographicSettingsPanel } from '@/components/dashboard/InfographicSett
 import { GeneratedGallery } from '@/components/dashboard/GeneratedGallery';
 import { FirstTimeUserModal } from '@/components/first-time-user-modal';
 import { API_CONFIG, CREDITS_CONFIG } from '@/config/app-config';
+import { type InfographicStyle } from '@/lib/infographic-styles';
 
 // Polling configuration
 const POLL_INTERVAL_MS = 3000; // 3 seconds
@@ -22,11 +23,6 @@ const POLL_TIMEOUT_MS = 300000; // 5 minutes
 
 type GeneratedItem = { id: string; url: string };
 type GenerationMode = 'headshot' | 'infographic';
-type InfographicStyle =
-  | 'FUN_PLAYFUL'
-  | 'CLEAN_MINIMALIST'
-  | 'DARK_MODE_TECH'
-  | 'MODERN_EDITORIAL';
 
 export function DashboardClient() {
   const { data: session } = useSession();

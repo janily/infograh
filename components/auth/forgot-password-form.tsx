@@ -40,6 +40,7 @@ export function ForgotPasswordForm({
     }
 
     try {
+      // @ts-ignore - better-auth forgetPassword method
       const { error } = await authClient.forgetPassword({
         email,
         redirectTo: `${window.location.origin}/auth/reset-password`,

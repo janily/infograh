@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Button } from '@heroui/button';
-import { Input } from '@heroui/input';
 import { motion, Variants } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
@@ -29,17 +28,23 @@ export function Hero() {
   const validateUrl = (inputUrl: string) => {
     try {
       const urlObj = new URL(inputUrl);
-      const isValid = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+      const isValid =
+        urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+
       setIsValidUrl(isValid);
-      
+
       // Check if it's a WeChat URL - validate the hostname specifically
-      const isWeChat = urlObj.hostname === 'mp.weixin.qq.com' || urlObj.hostname.endsWith('.mp.weixin.qq.com');
+      const isWeChat =
+        urlObj.hostname === 'mp.weixin.qq.com' ||
+        urlObj.hostname.endsWith('.mp.weixin.qq.com');
+
       setIsWeChatUrl(isWeChat);
-      
+
       return isValid;
     } catch {
       setIsValidUrl(false);
       setIsWeChatUrl(false);
+
       return false;
     }
   };

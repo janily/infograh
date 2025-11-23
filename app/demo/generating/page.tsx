@@ -1,7 +1,8 @@
 'use client';
 
-import { GeneratingState } from '@/components/dashboard/generating/GeneratingState';
 import { useRouter } from 'next/navigation';
+
+import { GeneratingState } from '@/components/dashboard/generating/GeneratingState';
 
 export default function GeneratingDemoPage() {
   const router = useRouter();
