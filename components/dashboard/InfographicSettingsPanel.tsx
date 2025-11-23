@@ -77,9 +77,13 @@ export function InfographicSettingsPanel({
           label='Infographic Style'
           selectedKeys={[style]}
           onSelectionChange={(keys: Selection) => {
-            const key = Array.from(keys as Set<string>)[0] as InfographicStyle;
+            // Handle Selection type properly
+            if (keys === 'all') return;
+            const key = Array.from(keys)[0];
 
-            onStyleChange(key);
+            if (typeof key === 'string') {
+              onStyleChange(key as InfographicStyle);
+            }
           }}
         >
           {INFOGRAPHIC_STYLES.map(styleOption => (

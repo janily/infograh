@@ -223,6 +223,14 @@ export function DashboardClient() {
             const pollResponse = await fetch(
               `${API_CONFIG.ENDPOINTS.POLL_INFOGRAPHIC}?taskId=${taskId}`
             );
+
+            // Handle HTTP errors
+            if (!pollResponse.ok) {
+              console.error('Poll request failed:', pollResponse.status);
+
+              return; // Continue polling despite errors
+            }
+
             const pollData = await pollResponse.json();
 
             if (

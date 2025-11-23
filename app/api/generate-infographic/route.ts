@@ -13,6 +13,7 @@ export const INFOGRAPHIC_STYLES = {
 } as const;
 
 // Webhook special value to get immediate task ID response instead of streaming
+// When set to '-1', GRSAI API returns task ID immediately for polling instead of streaming
 const WEBHOOK_RETURN_ID = '-1';
 
 export type InfographicStyle = keyof typeof INFOGRAPHIC_STYLES;
@@ -59,8 +60,9 @@ export async function POST(request: NextRequest) {
       .replace(/[\r\n]+/g, ' ')
       .substring(0, 10000)
       .trim();
+    // Allow alphanumeric, spaces, parentheses, and hyphens for language names
     const sanitizedLanguage = language
-      .replace(/[^a-zA-Z\s]/g, '')
+      .replace(/[^a-zA-Z0-9\s\-()]/g, '')
       .substring(0, 50);
 
     // Get style guidelines
