@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
 
-  authors: [{ name: 'URL2Infograph' }],
-  creator: 'URL2Infograph',
-  publisher: 'URL2Infograph',
+  authors: [{ name: 'url2info' }],
+  creator: 'url2info',
+  publisher: 'url2info',
   formatDetection: {
     email: false,
     address: false,
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
         url: 'https://url2infograph.com/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'URL2Infograph - Turn URLs into clean infographics',
+        alt: 'url2info - Turn URLs into clean infographics',
       },
     ],
   },
@@ -91,7 +91,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang='en'>
       <head>
-        <meta content='URL2Infograph' name='apple-mobile-web-app-title' />
+        <meta content='url2info' name='apple-mobile-web-app-title' />
       </head>
       <body
         className={clsx(

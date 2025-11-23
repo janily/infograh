@@ -124,7 +124,7 @@ export function HowItWorks() {
                 <Image
                   fill
                   priority
-                  alt='URL2Infograph Dashboard Screenshot'
+                  alt='url2info Dashboard Screenshot'
                   className='object-cover object-top'
                   src='/images/screenshot-pictureai.png'
                 />
