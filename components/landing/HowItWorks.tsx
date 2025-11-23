@@ -24,24 +24,24 @@ export function HowItWorks() {
   const steps = [
     {
       step: 1,
-      title: 'Upload one photo',
+      title: 'Paste URL',
       description:
-        "Any clear portrait works great. Selfie, headshot, or professional photo - we'll handle the rest.",
-      icon: '📷',
+        'Simply paste your article link - WeChat articles, blogs, or news. We handle the rest automatically.',
+      icon: '🔗',
     },
     {
       step: 2,
-      title: 'Choose your style',
+      title: 'AI Analysis',
       description:
-        'Pick from professional, creative, lifestyle themes and let our AI understand your vision.',
-      icon: '🎨',
+        'Nano Banana Pro reads and extracts key insights, data points, and creates a visual structure.',
+      icon: '🤖',
     },
     {
       step: 3,
-      title: 'Generate & download',
+      title: 'Download Infographic',
       description:
-        'Get a consistent gallery of professional images in seconds. Your face, unlimited possibilities.',
-      icon: '✨',
+        'Get a beautiful, shareable infographic in seconds. Clean design, professional quality.',
+      icon: '📊',
     },
   ];
 
@@ -71,7 +71,7 @@ export function HowItWorks() {
           viewport={{ once: true }}
           whileInView='visible'
         >
-          Transform yourself in three simple steps
+          Transform articles into infographics in three simple steps
         </motion.p>
 
         {/* Steps section - Top */}
@@ -124,7 +124,7 @@ export function HowItWorks() {
                 <Image
                   fill
                   priority
-                  alt='PictureMe AI Dashboard Screenshot'
+                  alt='URL2Infograph Dashboard Screenshot'
                   className='object-cover object-top'
                   src='/images/screenshot-pictureai.png'
                 />
