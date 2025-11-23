@@ -32,8 +32,8 @@ export function Hero() {
       const isValid = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
       setIsValidUrl(isValid);
       
-      // Check if it's a WeChat URL
-      const isWeChat = inputUrl.includes('mp.weixin.qq.com');
+      // Check if it's a WeChat URL - validate the hostname specifically
+      const isWeChat = urlObj.hostname === 'mp.weixin.qq.com' || urlObj.hostname.endsWith('.mp.weixin.qq.com');
       setIsWeChatUrl(isWeChat);
       
       return isValid;

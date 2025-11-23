@@ -20,6 +20,9 @@ import { API_CONFIG, CREDITS_CONFIG } from '@/config/app-config';
 type GeneratedItem = { id: string; url: string };
 type ViewState = 'input' | 'generating' | 'result';
 
+// Demo configuration
+const DEMO_GENERATION_DELAY = 5000; // 5 seconds for demo purposes
+
 export function DashboardClient() {
   const { data: session } = useSession();
   const { creditInfo, fetchCredits } = useCreditsStore();
@@ -74,7 +77,7 @@ export function DashboardClient() {
         // Use a placeholder image for now
         setGeneratedImageUrl('https://via.placeholder.com/800x1200/07c060/ffffff?text=Generated+Infographic');
         setViewState('result');
-      }, 5000);
+      }, DEMO_GENERATION_DELAY);
     }
   }, [searchParams]);
 
