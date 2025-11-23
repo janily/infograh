@@ -7,6 +7,9 @@ import { Button } from '@heroui/button';
 import { Select, SelectItem } from '@heroui/select';
 import { Spinner } from '@heroui/spinner';
 
+// UI-focused style options for dropdown display
+// Note: This is separate from lib/infographic-styles.ts which contains
+// the detailed style prompts sent to the AI API
 const INFOGRAPHIC_STYLES = [
   { key: 'FUN_PLAYFUL', label: 'Fun & Playful' },
   { key: 'CLEAN_MINIMALIST', label: 'Clean Minimalist' },

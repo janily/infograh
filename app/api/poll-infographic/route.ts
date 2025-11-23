@@ -21,9 +21,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Poll the GRSAI result endpoint
-    // TODO: Verify the correct result endpoint URL from GRSAI API documentation
-    // The API documentation doesn't specify a result polling endpoint,
-    // so this endpoint structure is assumed based on common API patterns
+    // Note: The API documentation should be consulted to verify this endpoint structure.
+    // Using common REST API pattern: /v1/draw/result/{taskId}
+    // This endpoint is called repeatedly until the task completes or times out
     const response = await fetch(
       `https://grsai.dakka.com.cn/v1/draw/result/${taskId}`,
       {
