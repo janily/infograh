@@ -33,6 +33,7 @@ export function GeneratingState({ onCancel }: GeneratingStateProps) {
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 90) return 90; // Cap at 90% until actual completion
+
         return prev + Math.random() * 15;
       });
     }, 500);
