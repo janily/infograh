@@ -21,8 +21,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Poll the GRSAI result endpoint
-    // Note: The API documentation doesn't specify a result endpoint,
-    // but typically it would be something like this
+    // TODO: Verify the correct result endpoint URL from GRSAI API documentation
+    // The API documentation doesn't specify a result polling endpoint,
+    // so this endpoint structure is assumed based on common API patterns
     const response = await fetch(
       `https://grsai.dakka.com.cn/v1/draw/result/${taskId}`,
       {
@@ -34,11 +35,22 @@ export async function GET(request: NextRequest) {
     );
 
     if (!response.ok) {
-      // If the endpoint doesn't exist or returns an error, return task pending
-      return NextResponse.json({
-        status: 'pending',
-        taskId,
-      });
+      // Distinguish between different error types
+      if (response.status === 404) {
+        // Task not found or still pending
+        return NextResponse.json({
+          status: 'pending',
+          taskId,
+        });
+      } else {
+        // Other errors (4xx, 5xx)
+        const errorData = await response.json().catch(() => ({}));
+
+        return NextResponse.json(
+          { error: 'Failed to poll task status', details: errorData },
+          { status: response.status }
+        );
+      }
     }
 
     const data = await response.json();

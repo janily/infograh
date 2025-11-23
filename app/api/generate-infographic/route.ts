@@ -12,6 +12,9 @@ export const INFOGRAPHIC_STYLES = {
     'STYLE: Modern, flat vector illustration style. Clean, professional, and editorial (like a high-end tech magazine). Cohesive, mature color palette.',
 } as const;
 
+// Webhook special value to get immediate task ID response instead of streaming
+const WEBHOOK_RETURN_ID = '-1';
+
 export type InfographicStyle = keyof typeof INFOGRAPHIC_STYLES;
 
 type GenerateInfographicRequest = {
@@ -80,7 +83,7 @@ VISUAL DESIGN RULES:
           aspectRatio,
           imageSize,
           shutProgress: false,
-          webHook: '-1', // Return ID immediately instead of using webhook
+          webHook: WEBHOOK_RETURN_ID, // Return ID immediately instead of using webhook
         }),
       }
     );

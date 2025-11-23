@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { Card } from '@heroui/card';
 import { Button } from '@heroui/button';
 
@@ -15,6 +15,10 @@ import { InfographicSettingsPanel } from '@/components/dashboard/InfographicSett
 import { GeneratedGallery } from '@/components/dashboard/GeneratedGallery';
 import { FirstTimeUserModal } from '@/components/first-time-user-modal';
 import { API_CONFIG, CREDITS_CONFIG } from '@/config/app-config';
+
+// Polling configuration
+const POLL_INTERVAL_MS = 3000; // 3 seconds
+const POLL_TIMEOUT_MS = 300000; // 5 minutes
 
 type GeneratedItem = { id: string; url: string };
 type GenerationMode = 'headshot' | 'infographic';
@@ -53,6 +57,10 @@ export function DashboardClient() {
   const [fetchedContent, setFetchedContent] = useState<string | null>(null);
   const [isFetchingContent, setIsFetchingContent] = useState<boolean>(false);
 
+  // Ref to track polling interval for cleanup
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const canGenerate = useMemo(() => {
     if (mode === 'headshot') {
       return (
@@ -65,6 +73,18 @@ export function DashboardClient() {
       return !!fetchedContent;
     }
   }, [mode, previewUrl, referenceUrl, creditInfo, fetchedContent]);
+
+  // Cleanup polling intervals on component unmount
+  useEffect(() => {
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
+      if (pollTimeoutRef.current) {
+        clearTimeout(pollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Load existing generations and credits on component mount
   useEffect(() => {
@@ -187,8 +207,16 @@ export function DashboardClient() {
 
         console.log('Infographic task started with ID:', taskId);
 
+        // Clear any existing polling intervals
+        if (pollIntervalRef.current) {
+          clearInterval(pollIntervalRef.current);
+        }
+        if (pollTimeoutRef.current) {
+          clearTimeout(pollTimeoutRef.current);
+        }
+
         // Poll for results
-        const pollInterval = setInterval(async () => {
+        pollIntervalRef.current = setInterval(async () => {
           try {
             const pollResponse = await fetch(
               `${API_CONFIG.ENDPOINTS.POLL_INFOGRAPHIC}?taskId=${taskId}`
@@ -199,7 +227,14 @@ export function DashboardClient() {
               pollData.data?.status === 'succeeded' &&
               pollData.data?.results?.[0]?.url
             ) {
-              clearInterval(pollInterval);
+              if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+                pollIntervalRef.current = null;
+              }
+              if (pollTimeoutRef.current) {
+                clearTimeout(pollTimeoutRef.current);
+                pollTimeoutRef.current = null;
+              }
               const newItem = {
                 id: taskId,
                 url: pollData.data.results[0].url,
@@ -209,7 +244,14 @@ export function DashboardClient() {
               setLoadingSpinners([]);
               setIsGenerating(false);
             } else if (pollData.data?.status === 'failed') {
-              clearInterval(pollInterval);
+              if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+                pollIntervalRef.current = null;
+              }
+              if (pollTimeoutRef.current) {
+                clearTimeout(pollTimeoutRef.current);
+                pollTimeoutRef.current = null;
+              }
               setError(
                 pollData.data?.failure_reason || 'Infographic generation failed'
               );
@@ -220,15 +262,18 @@ export function DashboardClient() {
             console.error('Polling error:', pollError);
             // Continue polling despite errors
           }
-        }, 3000); // Poll every 3 seconds
+        }, POLL_INTERVAL_MS);
 
-        // Stop polling after 5 minutes
-        setTimeout(() => {
-          clearInterval(pollInterval);
+        // Stop polling after timeout
+        pollTimeoutRef.current = setTimeout(() => {
+          if (pollIntervalRef.current) {
+            clearInterval(pollIntervalRef.current);
+            pollIntervalRef.current = null;
+          }
           setError('Infographic generation timed out. Please try again.');
           setLoadingSpinners([]);
           setIsGenerating(false);
-        }, 300000);
+        }, POLL_TIMEOUT_MS);
       } else if (result.data?.results?.[0]?.url) {
         // Direct result returned (stream mode)
         const newItem = {
