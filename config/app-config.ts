@@ -44,6 +44,9 @@ export const API_CONFIG = {
     USER_GENERATIONS: '/api/user/generations',
     STRIPE_CHECKOUT: '/api/stripe/create-checkout-session',
     AUTH_RESEND_VERIFICATION: '/api/auth/resend-verification',
+    FETCH_CONTENT: '/api/fetch-content',
+    GENERATE_INFOGRAPHIC: '/api/generate-infographic',
+    POLL_INFOGRAPHIC: '/api/poll-infographic',
   },
 
   // External services

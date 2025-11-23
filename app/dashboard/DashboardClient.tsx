@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { Card } from '@heroui/card';
+import { Button } from '@heroui/button';
 
 import { generateWithFal, type ImageSize } from '@/lib/fal-client';
 import { PROMPT_LIBRARY, type PromptCategory } from '@/lib/prompt-presets';
@@ -10,15 +11,31 @@ import { useSession } from '@/lib/auth-client';
 import { useCreditsStore } from '@/lib/credits-store';
 import { ImageUploadSection } from '@/components/dashboard/ImageUploadSection';
 import { GenerationSettingsPanel } from '@/components/dashboard/GenerationSettingsPanel';
+import { InfographicSettingsPanel } from '@/components/dashboard/InfographicSettingsPanel';
 import { GeneratedGallery } from '@/components/dashboard/GeneratedGallery';
 import { FirstTimeUserModal } from '@/components/first-time-user-modal';
 import { API_CONFIG, CREDITS_CONFIG } from '@/config/app-config';
 
+// Polling configuration
+const POLL_INTERVAL_MS = 3000; // 3 seconds
+const POLL_TIMEOUT_MS = 300000; // 5 minutes
+
 type GeneratedItem = { id: string; url: string };
+type GenerationMode = 'headshot' | 'infographic';
+type InfographicStyle =
+  | 'FUN_PLAYFUL'
+  | 'CLEAN_MINIMALIST'
+  | 'DARK_MODE_TECH'
+  | 'MODERN_EDITORIAL';
 
 export function DashboardClient() {
   const { data: session } = useSession();
   const { creditInfo, fetchCredits } = useCreditsStore();
+
+  // Mode selection
+  const [mode, setMode] = useState<GenerationMode>('headshot');
+
+  // Headshot generation states
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [referenceUrl, setReferenceUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -32,14 +49,49 @@ export function DashboardClient() {
   const [loadingSpinners, setLoadingSpinners] = useState<string[]>([]);
   const [isLoadingExisting, setIsLoadingExisting] = useState(true);
 
+  // Infographic generation states
+  const [url, setUrl] = useState<string>('');
+  const [infographicStyle, setInfographicStyle] =
+    useState<InfographicStyle>('MODERN_EDITORIAL');
+  const [language, setLanguage] = useState<string>('English');
+  const [fetchedContent, setFetchedContent] = useState<string | null>(null);
+  const [isFetchingContent, setIsFetchingContent] = useState<boolean>(false);
+
+  // Ref to track polling interval for cleanup
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Helper function to clear polling refs
+  const clearPollingRefs = () => {
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+    if (pollTimeoutRef.current) {
+      clearTimeout(pollTimeoutRef.current);
+      pollTimeoutRef.current = null;
+    }
+  };
+
   const canGenerate = useMemo(() => {
-    return (
-      !!previewUrl &&
-      !!referenceUrl &&
-      creditInfo !== null &&
-      creditInfo.total > 0
-    );
-  }, [previewUrl, referenceUrl, creditInfo]);
+    if (mode === 'headshot') {
+      return (
+        !!previewUrl &&
+        !!referenceUrl &&
+        creditInfo !== null &&
+        creditInfo.total > 0
+      );
+    } else {
+      return !!fetchedContent;
+    }
+  }, [mode, previewUrl, referenceUrl, creditInfo, fetchedContent]);
+
+  // Cleanup polling intervals on component unmount
+  useEffect(() => {
+    return () => {
+      clearPollingRefs();
+    };
+  }, []);
 
   // Load existing generations and credits on component mount
   useEffect(() => {
@@ -51,10 +103,10 @@ export function DashboardClient() {
 
   // Auto-populate prompt when category changes
   useEffect(() => {
-    if (category) {
+    if (category && mode === 'headshot') {
       loadRandomPrompt();
     }
-  }, [category]);
+  }, [category, mode]);
 
   const loadRandomPrompt = () => {
     const categoryPresets = PROMPT_LIBRARY[category] || [];
@@ -89,6 +141,155 @@ export function DashboardClient() {
       console.error('Error loading existing generations:', error);
     } finally {
       setIsLoadingExisting(false);
+    }
+  };
+
+  const handleFetchContent = async () => {
+    if (!url) return;
+
+    setIsFetchingContent(true);
+    setError(null);
+
+    try {
+      const response = await fetch(API_CONFIG.ENDPOINTS.FETCH_CONTENT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch content from URL');
+      }
+
+      const data = await response.json();
+
+      setFetchedContent(data.content);
+    } catch (err) {
+      console.error('Fetch content error:', err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to fetch content. Please try again.';
+
+      setError(errorMessage);
+    } finally {
+      setIsFetchingContent(false);
+    }
+  };
+
+  const handleGenerateInfographic = async () => {
+    if (!fetchedContent) return;
+
+    setIsGenerating(true);
+    setError(null);
+
+    const spinnerId = `loading-${Date.now()}`;
+
+    setLoadingSpinners([spinnerId]);
+
+    try {
+      const response = await fetch(API_CONFIG.ENDPOINTS.GENERATE_INFOGRAPHIC, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          structuralSummary: fetchedContent,
+          style: infographicStyle,
+          language,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate infographic');
+      }
+
+      const result = await response.json();
+
+      // The API returns an ID for polling
+      if (result.data?.id) {
+        const taskId = result.data.id;
+
+        console.log('Infographic task started with ID:', taskId);
+
+        // Clear any existing polling intervals
+        clearPollingRefs();
+
+        // Poll for results
+        pollIntervalRef.current = setInterval(async () => {
+          try {
+            const pollResponse = await fetch(
+              `${API_CONFIG.ENDPOINTS.POLL_INFOGRAPHIC}?taskId=${taskId}`
+            );
+
+            // Handle HTTP errors
+            if (!pollResponse.ok) {
+              console.error('Poll request failed:', pollResponse.status);
+
+              return; // Continue polling despite errors
+            }
+
+            const pollData = await pollResponse.json();
+
+            if (
+              pollData.data?.status === 'succeeded' &&
+              pollData.data?.results?.[0]?.url
+            ) {
+              clearPollingRefs();
+              const newItem = {
+                id: taskId,
+                url: pollData.data.results[0].url,
+              };
+
+              setItems(prev => [newItem, ...prev]);
+              setLoadingSpinners([]);
+              setIsGenerating(false);
+            } else if (pollData.data?.status === 'failed') {
+              clearPollingRefs();
+              setError(
+                pollData.data?.failure_reason || 'Infographic generation failed'
+              );
+              setLoadingSpinners([]);
+              setIsGenerating(false);
+            }
+          } catch (pollError) {
+            console.error('Polling error:', pollError);
+            // Continue polling despite errors
+          }
+        }, POLL_INTERVAL_MS);
+
+        // Stop polling after timeout
+        pollTimeoutRef.current = setTimeout(() => {
+          clearPollingRefs();
+          setError('Infographic generation timed out. Please try again.');
+          setLoadingSpinners([]);
+          setIsGenerating(false);
+        }, POLL_TIMEOUT_MS);
+      } else if (result.data?.results?.[0]?.url) {
+        // Direct result returned (stream mode)
+        const newItem = {
+          id: result.data.id || `infographic-${Date.now()}`,
+          url: result.data.results[0].url,
+        };
+
+        setItems(prev => [newItem, ...prev]);
+        setLoadingSpinners([]);
+        setIsGenerating(false);
+      } else {
+        throw new Error('Unexpected response format from API');
+      }
+    } catch (err) {
+      console.error('Generation error:', err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to generate infographic. Please try again.';
+
+      setError(errorMessage);
+      setLoadingSpinners([]);
+      setIsGenerating(false);
     }
   };
 
@@ -200,32 +401,86 @@ export function DashboardClient() {
       <section className='w-full min-h-screen'>
         <div className='w-full px-6 py-8'>
           <div className='container mx-auto max-w-7xl'>
+            {/* Mode Switcher */}
+            <div className='mb-6 flex justify-center gap-4'>
+              <Button
+                color={mode === 'headshot' ? 'primary' : 'default'}
+                size='lg'
+                variant={mode === 'headshot' ? 'solid' : 'bordered'}
+                onPress={() => setMode('headshot')}
+              >
+                Headshot Generator
+              </Button>
+              <Button
+                color={mode === 'infographic' ? 'primary' : 'default'}
+                size='lg'
+                variant={mode === 'infographic' ? 'solid' : 'bordered'}
+                onPress={() => setMode('infographic')}
+              >
+                Infographic Generator
+              </Button>
+            </div>
+
             <div className='grid grid-cols-1 lg:grid-cols-12 gap-8'>
               <div className='lg:col-span-4 xl:col-span-3'>
                 <div className='lg:sticky lg:top-20 flex flex-col gap-6'>
-                  <ImageUploadSection
-                    error={error}
-                    previewUrl={previewUrl}
-                    onPreviewChange={setPreviewUrl}
-                    onReferenceChange={setReferenceUrl}
-                  />
-                  <Card className='bg-content1/60 border border-default-100'>
-                    <div className='p-6 flex flex-col gap-6'>
-                      <GenerationSettingsPanel
-                        canGenerate={canGenerate}
-                        category={category}
-                        credits={creditInfo?.total ?? null}
-                        imageSize={imageSize}
-                        isGenerating={isGenerating}
-                        prompt={prompt}
-                        onCategoryChange={setCategory}
-                        onGenerate={handleGenerate}
-                        onImageSizeChange={setImageSize}
-                        onLoadRandomPrompt={loadRandomPrompt}
-                        onPromptChange={setPrompt}
+                  {mode === 'headshot' && (
+                    <>
+                      <ImageUploadSection
+                        error={error}
+                        previewUrl={previewUrl}
+                        onPreviewChange={setPreviewUrl}
+                        onReferenceChange={setReferenceUrl}
                       />
-                    </div>
-                  </Card>
+                      <Card className='bg-content1/60 border border-default-100'>
+                        <div className='p-6 flex flex-col gap-6'>
+                          <GenerationSettingsPanel
+                            canGenerate={canGenerate}
+                            category={category}
+                            credits={creditInfo?.total ?? null}
+                            imageSize={imageSize}
+                            isGenerating={isGenerating}
+                            prompt={prompt}
+                            onCategoryChange={setCategory}
+                            onGenerate={handleGenerate}
+                            onImageSizeChange={setImageSize}
+                            onLoadRandomPrompt={loadRandomPrompt}
+                            onPromptChange={setPrompt}
+                          />
+                        </div>
+                      </Card>
+                    </>
+                  )}
+
+                  {mode === 'infographic' && (
+                    <Card className='bg-content1/60 border border-default-100'>
+                      <div className='p-6 flex flex-col gap-6'>
+                        <InfographicSettingsPanel
+                          canGenerate={canGenerate}
+                          isFetchingContent={isFetchingContent}
+                          isGenerating={isGenerating}
+                          language={language}
+                          style={infographicStyle}
+                          url={url}
+                          onFetchContent={handleFetchContent}
+                          onGenerateInfographic={handleGenerateInfographic}
+                          onLanguageChange={setLanguage}
+                          onStyleChange={setInfographicStyle}
+                          onUrlChange={setUrl}
+                        />
+                        {error && (
+                          <div className='text-danger text-sm p-4 bg-danger-50 rounded-lg'>
+                            {error}
+                          </div>
+                        )}
+                        {fetchedContent && (
+                          <div className='text-success text-sm p-4 bg-success-50 rounded-lg'>
+                            ✓ Content fetched successfully!
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  )}
                 </div>
               </div>
 
