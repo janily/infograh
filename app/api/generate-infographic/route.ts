@@ -54,15 +54,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Sanitize inputs to prevent prompt injection
+    const sanitizedSummary = structuralSummary
+      .replace(/[\r\n]+/g, ' ')
+      .substring(0, 10000)
+      .trim();
+    const sanitizedLanguage = language
+      .replace(/[^a-zA-Z\s]/g, '')
+      .substring(0, 50);
+
     // Get style guidelines
     const styleGuidelines = INFOGRAPHIC_STYLES[style];
 
     // Build the prompt
-    const prompt = `Create a professional, high-quality educational infographic based strictly on this structured content plan: ${structuralSummary}
+    const prompt = `Create a professional, high-quality educational infographic based strictly on this structured content plan: ${sanitizedSummary}
 
 VISUAL DESIGN RULES:
 - ${styleGuidelines}
-- LANGUAGE: The text within the infographic MUST be written in ${language}.
+- LANGUAGE: The text within the infographic MUST be written in ${sanitizedLanguage}.
 - LAYOUT: MUST follow the "VISUAL METAPHOR IDEA" from the plan above if one was provided.
 - TYPOGRAPHY: Clean, highly readable sans-serif fonts. The "INFOGRAPHIC HEADLINE" must be prominent at the top.
 - CONTENT: Use the actual text from "KEY TAKEAWAYS" in the image. Do not use placeholder text like Lorem Ipsum.

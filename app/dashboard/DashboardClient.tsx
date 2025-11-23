@@ -61,6 +61,18 @@ export function DashboardClient() {
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Helper function to clear polling refs
+  const clearPollingRefs = () => {
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+    if (pollTimeoutRef.current) {
+      clearTimeout(pollTimeoutRef.current);
+      pollTimeoutRef.current = null;
+    }
+  };
+
   const canGenerate = useMemo(() => {
     if (mode === 'headshot') {
       return (
@@ -77,12 +89,7 @@ export function DashboardClient() {
   // Cleanup polling intervals on component unmount
   useEffect(() => {
     return () => {
-      if (pollIntervalRef.current) {
-        clearInterval(pollIntervalRef.current);
-      }
-      if (pollTimeoutRef.current) {
-        clearTimeout(pollTimeoutRef.current);
-      }
+      clearPollingRefs();
     };
   }, []);
 
@@ -208,12 +215,7 @@ export function DashboardClient() {
         console.log('Infographic task started with ID:', taskId);
 
         // Clear any existing polling intervals
-        if (pollIntervalRef.current) {
-          clearInterval(pollIntervalRef.current);
-        }
-        if (pollTimeoutRef.current) {
-          clearTimeout(pollTimeoutRef.current);
-        }
+        clearPollingRefs();
 
         // Poll for results
         pollIntervalRef.current = setInterval(async () => {
@@ -227,14 +229,7 @@ export function DashboardClient() {
               pollData.data?.status === 'succeeded' &&
               pollData.data?.results?.[0]?.url
             ) {
-              if (pollIntervalRef.current) {
-                clearInterval(pollIntervalRef.current);
-                pollIntervalRef.current = null;
-              }
-              if (pollTimeoutRef.current) {
-                clearTimeout(pollTimeoutRef.current);
-                pollTimeoutRef.current = null;
-              }
+              clearPollingRefs();
               const newItem = {
                 id: taskId,
                 url: pollData.data.results[0].url,
@@ -244,14 +239,7 @@ export function DashboardClient() {
               setLoadingSpinners([]);
               setIsGenerating(false);
             } else if (pollData.data?.status === 'failed') {
-              if (pollIntervalRef.current) {
-                clearInterval(pollIntervalRef.current);
-                pollIntervalRef.current = null;
-              }
-              if (pollTimeoutRef.current) {
-                clearTimeout(pollTimeoutRef.current);
-                pollTimeoutRef.current = null;
-              }
+              clearPollingRefs();
               setError(
                 pollData.data?.failure_reason || 'Infographic generation failed'
               );
@@ -266,10 +254,7 @@ export function DashboardClient() {
 
         // Stop polling after timeout
         pollTimeoutRef.current = setTimeout(() => {
-          if (pollIntervalRef.current) {
-            clearInterval(pollIntervalRef.current);
-            pollIntervalRef.current = null;
-          }
+          clearPollingRefs();
           setError('Infographic generation timed out. Please try again.');
           setLoadingSpinners([]);
           setIsGenerating(false);
