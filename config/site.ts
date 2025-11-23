@@ -1,16 +1,16 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: 'PictureMe AI',
+  name: 'url2info',
   description:
-    'Upload one photo, get dozens of studio‑quality shots of yourself in any setting — fast, consistent, and private.',
+    'Turn your URLs into clean infographics in seconds. Support WeChat Articles, Blogs, and News.',
   navItems: [
     {
-      label: 'Features',
-      href: '/#features',
+      label: 'Home',
+      href: '/',
     },
     {
-      label: 'How it works',
+      label: 'How it Works',
       href: '/#how-it-works',
     },
     {
@@ -20,11 +20,11 @@ export const siteConfig = {
   ],
   navMenuItems: [
     {
-      label: 'Features',
-      href: '/#features',
+      label: 'Home',
+      href: '/',
     },
     {
-      label: 'How it works',
+      label: 'How it Works',
       href: '/#how-it-works',
     },
     {

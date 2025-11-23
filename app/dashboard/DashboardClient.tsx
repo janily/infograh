@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Card } from '@heroui/card';
 
 import { generateWithFal, type ImageSize } from '@/lib/fal-client';
@@ -11,14 +12,28 @@ import { useCreditsStore } from '@/lib/credits-store';
 import { ImageUploadSection } from '@/components/dashboard/ImageUploadSection';
 import { GenerationSettingsPanel } from '@/components/dashboard/GenerationSettingsPanel';
 import { GeneratedGallery } from '@/components/dashboard/GeneratedGallery';
+import { GeneratingState } from '@/components/dashboard/generating/GeneratingState';
+import { ResultDisplay } from '@/components/dashboard/result/ResultDisplay';
 import { FirstTimeUserModal } from '@/components/first-time-user-modal';
 import { API_CONFIG, CREDITS_CONFIG } from '@/config/app-config';
 
 type GeneratedItem = { id: string; url: string };
+type ViewState = 'input' | 'generating' | 'result';
+
+// Demo configuration
+const DEMO_GENERATION_DELAY = 5000; // 5 seconds for demo purposes
 
 export function DashboardClient() {
   const { data: session } = useSession();
   const { creditInfo, fetchCredits } = useCreditsStore();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  const [viewState, setViewState] = useState<ViewState>('input');
+  const [inputUrl, setInputUrl] = useState<string>('');
+  const [articleTitle, setArticleTitle] = useState<string>('');
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string>('');
+  
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [referenceUrl, setReferenceUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -41,13 +56,38 @@ export function DashboardClient() {
     );
   }, [previewUrl, referenceUrl, creditInfo]);
 
+  // Check if URL parameter is present and start generation
+  useEffect(() => {
+    const url = searchParams?.get('url');
+    if (url) {
+      setInputUrl(url);
+      setViewState('generating');
+      
+      // Simulate generation process (in real app, this would call backend)
+      setTimeout(() => {
+        // Extract title from URL or use default
+        try {
+          const urlObj = new URL(url);
+          const domain = urlObj.hostname;
+          setArticleTitle(`Article from ${domain}`);
+        } catch {
+          setArticleTitle('Generated Infographic');
+        }
+        
+        // Use a placeholder image for now
+        setGeneratedImageUrl('https://via.placeholder.com/800x1200/07c060/ffffff?text=Generated+Infographic');
+        setViewState('result');
+      }, DEMO_GENERATION_DELAY);
+    }
+  }, [searchParams]);
+
   // Load existing generations and credits on component mount
   useEffect(() => {
-    if (session?.user.id) {
+    if (session?.user.id && viewState === 'input') {
       loadExistingGenerations();
       fetchCredits();
     }
-  }, [session?.user.id]);
+  }, [session?.user.id, viewState]);
 
   // Auto-populate prompt when category changes
   useEffect(() => {
@@ -194,6 +234,50 @@ export function DashboardClient() {
     }
   };
 
+  const handleDownload = () => {
+    if (generatedImageUrl) {
+      // Create a temporary link to download the image
+      const link = document.createElement('a');
+      link.href = generatedImageUrl;
+      link.download = `${articleTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const handleNewGeneration = () => {
+    router.push('/');
+  };
+
+  const handleCancelGeneration = () => {
+    setViewState('input');
+    router.push('/dashboard');
+  };
+
+  // Render based on view state
+  if (viewState === 'generating') {
+    return (
+      <ErrorBoundary>
+        <GeneratingState onCancel={handleCancelGeneration} />
+      </ErrorBoundary>
+    );
+  }
+
+  if (viewState === 'result') {
+    return (
+      <ErrorBoundary>
+        <ResultDisplay
+          imageUrl={generatedImageUrl}
+          title={articleTitle}
+          onDownload={handleDownload}
+          onNewGeneration={handleNewGeneration}
+        />
+      </ErrorBoundary>
+    );
+  }
+
+  // Default input view (original dashboard)
   return (
     <ErrorBoundary>
       {session?.user.id && <FirstTimeUserModal userId={session.user.id} />}

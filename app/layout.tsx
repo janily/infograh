@@ -18,31 +18,31 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
 
-  authors: [{ name: 'PictureMe AI' }],
-  creator: 'PictureMe AI',
-  publisher: 'PictureMe AI',
+  authors: [{ name: 'url2info' }],
+  creator: 'url2info',
+  publisher: 'url2info',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://pictureme.ai'),
+  metadataBase: new URL('https://url2infograph.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://pictureme.ai',
+    url: 'https://url2infograph.com',
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
       {
-        url: 'https://deifos.github.io/images/picturemeai-banner.jpg',
+        url: 'https://url2infograph.com/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'PictureMe AI - Generate professional photos from a single upload',
+        alt: 'url2info - Turn URLs into clean infographics',
       },
     ],
   },
@@ -50,8 +50,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteConfig.name,
     description: siteConfig.description,
-    images: ['https://deifos.github.io/images/picturemeai-banner.jpg'],
-    creator: '@deifos',
+    images: ['https://url2infograph.com/og-image.jpg'],
+    creator: '@url2infograph',
   },
   robots: {
     index: true,
@@ -91,7 +91,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang='en'>
       <head>
-        <meta content='Picturemeai' name='apple-mobile-web-app-title' />
+        <meta content='url2info' name='apple-mobile-web-app-title' />
       </head>
       <body
         className={clsx(
