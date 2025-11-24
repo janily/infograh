@@ -21,43 +21,63 @@ export async function GET(request: NextRequest) {
     }
 
     // Poll the GRSAI result endpoint
-    // Note: The API documentation should be consulted to verify this endpoint structure.
-    // Using common REST API pattern: /v1/draw/result/{taskId}
-    // This endpoint is called repeatedly until the task completes or times out
+    // According to GRSAI API docs, the /v1/draw/result endpoint uses POST method
+    // and expects the task ID in the request body
     const response = await fetch(
-      `https://grsai.dakka.com.cn/v1/draw/result/${taskId}`,
+      'https://grsai.dakka.com.cn/v1/draw/result',
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${apiKey}`,
         },
+        body: JSON.stringify({
+          id: taskId,
+        }),
       }
     );
 
     if (!response.ok) {
-      // Distinguish between different error types
-      if (response.status === 404) {
-        // Task not found or still pending
-        return NextResponse.json({
-          status: 'pending',
-          taskId,
-        });
-      } else {
-        // Other errors (4xx, 5xx)
-        const errorData = await response.json().catch(() => ({}));
+      const errorData = await response.json().catch(() => ({}));
 
-        return NextResponse.json(
-          { error: 'Failed to poll task status', details: errorData },
-          { status: response.status }
-        );
-      }
+      console.error(`Error polling task ${taskId}:`, response.status, errorData);
+
+      return NextResponse.json(
+        { error: 'Failed to poll task status', details: errorData },
+        { status: response.status }
+      );
     }
 
-    const data = await response.json();
+    const result = await response.json();
 
+    console.log(`Poll result for taskId ${taskId}:`, JSON.stringify(result, null, 2));
+
+    // GRSAI API returns: { code: 0, msg: "success", data: { id, results, progress, status, ... } }
+    // code: 0 = success, -22 = task not found
+    if (result.code === -22) {
+      // Task not found
+      console.log(`Task ${taskId} not found (code: -22) - returning pending status`);
+      return NextResponse.json({
+        success: true,
+        data: {
+          status: 'pending',
+          taskId,
+        },
+      });
+    }
+
+    if (result.code !== 0) {
+      console.error(`GRSAI API error for task ${taskId}, code: ${result.code}, msg: ${result.msg}`);
+      return NextResponse.json(
+        { error: result.msg || 'API request failed', code: result.code },
+        { status: 400 }
+      );
+    }
+
+    // Return the data object which contains the actual task result
     return NextResponse.json({
       success: true,
-      data,
+      data: result.data,
     });
   } catch (error) {
     console.error('Error polling infographic:', error);

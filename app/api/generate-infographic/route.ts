@@ -101,12 +101,24 @@ VISUAL DESIGN RULES:
       );
     }
 
-    const data = await response.json();
+    const result = await response.json();
 
-    // Return the task ID for polling or the complete result
+    console.log('GRSAI API Response:', JSON.stringify(result, null, 2));
+
+    // GRSAI API returns: { code: 0, msg: "success", data: { id: "task-id" } }
+    // when webHook is set to "-1"
+    if (result.code !== 0) {
+      console.error('GRSAI API error:', result.msg, result);
+      return NextResponse.json(
+        { error: result.msg || 'Failed to generate infographic', code: result.code },
+        { status: 400 }
+      );
+    }
+
+    // Return the data object which contains the task ID
     return NextResponse.json({
       success: true,
-      data,
+      data: result.data,
     });
   } catch (error) {
     console.error('Error generating infographic:', error);

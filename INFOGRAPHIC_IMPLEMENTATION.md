@@ -177,11 +177,28 @@ To test the implementation:
 8. Click "Generate Infographic"
 9. Wait for the result to appear in the gallery
 
+## API Details
+
+### GRSAI API Integration
+
+The implementation uses the GRSAI Nano Banana API with the following specifics:
+
+1. **Generation Request** (`/v1/draw/nano-banana`):
+   - Uses `webHook: "-1"` to get immediate task ID response
+   - Returns: `{ code: 0, msg: "success", data: { id: "task-id" } }`
+
+2. **Result Polling** (`/v1/draw/result`):
+   - Uses POST method (not GET)
+   - Request body: `{ id: "task-id" }`
+   - Returns: `{ code: 0, msg: "success", data: { id, status, progress, results, ... } }`
+   - Status codes:
+     - `code: 0` = success
+     - `code: -22` = task not found (treated as pending)
+
 ## Known Limitations
 
 1. **Build Issue**: Google Fonts fetch fails in some environments due to network restrictions. This is unrelated to the infographic feature.
-2. **Polling**: The polling endpoint assumes a `/v1/draw/result/{taskId}` endpoint exists. If the GRSAI API uses a different structure, this may need adjustment.
-3. **Credit System**: Infographic generation currently doesn't consume credits from the existing credit system. This may need to be integrated in the future.
+2. **Credit System**: Infographic generation currently doesn't consume credits from the existing credit system. This may need to be integrated in the future.
 
 ## Future Enhancements
 

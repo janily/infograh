@@ -213,9 +213,11 @@ export function DashboardClient() {
 
       const result = await response.json();
 
-      // The API returns an ID for polling (nested in result.data.data.id)
-      if (result.data?.data?.id) {
-        const taskId = result.data.data.id;
+      // The API returns an ID for polling in result.data.id
+      console.log('Generate infographic result:', result);
+
+      if (result.data?.id) {
+        const taskId = result.data.id;
 
         console.log('Infographic task started with ID:', taskId);
 
@@ -240,19 +242,28 @@ export function DashboardClient() {
 
             const pollData = await pollResponse.json();
 
+            console.log('Poll response:', pollData);
+
             if (
               pollData.data?.status === 'succeeded' &&
               pollData.data?.results?.[0]?.url
             ) {
+              console.log('Infographic succeeded! URL:', pollData.data.results[0].url);
               clearPollingRefs();
               addInfographicToGallery(taskId, pollData.data.results[0].url);
             } else if (pollData.data?.status === 'failed') {
+              console.error('Infographic failed:', pollData.data?.failure_reason);
               clearPollingRefs();
               setError(
                 pollData.data?.failure_reason || 'Infographic generation failed'
               );
               setLoadingSpinners([]);
               setIsGenerating(false);
+            } else if (pollData.data?.status === 'pending' || pollData.data?.status === 'running') {
+              console.log('Infographic still in progress, status:', pollData.data?.status);
+              // Continue polling
+            } else {
+              console.warn('Unexpected poll response status:', pollData.data?.status, pollData);
             }
           } catch (pollError) {
             console.error('Polling error:', pollError);
@@ -267,19 +278,15 @@ export function DashboardClient() {
           setLoadingSpinners([]);
           setIsGenerating(false);
         }, POLL_TIMEOUT_MS);
-      } else if (result.data?.data?.results?.[0]?.url) {
-        // Direct result returned (nested structure)
-        addInfographicToGallery(
-          result.data.data.id || `infographic-${Date.now()}`,
-          result.data.data.results[0].url
-        );
       } else if (result.data?.results?.[0]?.url) {
-        // Direct result returned (stream mode, non-nested)
+        // Direct result returned (without polling, already completed)
+        console.log('Infographic completed immediately! URL:', result.data.results[0].url);
         addInfographicToGallery(
           result.data.id || `infographic-${Date.now()}`,
           result.data.results[0].url
         );
       } else {
+        console.error('Unexpected response format:', result);
         throw new Error('Unexpected response format from API');
       }
     } catch (err) {
