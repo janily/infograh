@@ -223,6 +223,8 @@ export function DashboardClient() {
         clearPollingRefs();
 
         // Poll for results
+        // Note: The poll API returns { success: true, data: { status, results, ... } }
+        // where data contains the direct GRSAI API response
         pollIntervalRef.current = setInterval(async () => {
           try {
             const pollResponse = await fetch(
