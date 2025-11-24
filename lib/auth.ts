@@ -74,8 +74,13 @@ export const auth = betterAuth({
   },
 });
 
+// Constants for mock session configuration
+const MOCK_SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
 /**
  * Session type that matches better-auth session structure
+ * Note: This is a simplified version based on the actual usage in the app.
+ * For a production app, consider importing from better-auth types if available.
  */
 type Session = {
   user: {
@@ -132,7 +137,7 @@ export function getMockSession(): Session | null {
     },
     session: {
       token: 'dev-mock-session-token',
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+      expiresAt: new Date(Date.now() + MOCK_SESSION_DURATION_MS),
       userId: 'dev-test-user-id',
       ipAddress: '127.0.0.1',
       userAgent: 'dev-mode',
