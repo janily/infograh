@@ -73,3 +73,44 @@ export const auth = betterAuth({
     },
   },
 });
+
+/**
+ * Check if authentication is disabled for development
+ * WARNING: Only use in local development, never in production!
+ */
+export function isAuthDisabled(): boolean {
+  return (
+    process.env.DISABLE_AUTH === 'true' &&
+    process.env.NODE_ENV === 'development'
+  );
+}
+
+/**
+ * Get a mock session for development when authentication is disabled
+ * This allows testing functionality without going through the login flow
+ */
+export function getMockSession() {
+  if (!isAuthDisabled()) {
+    return null;
+  }
+
+  // Return a mock session with a test user
+  return {
+    user: {
+      id: 'dev-test-user-id',
+      email: 'dev@test.com',
+      name: 'Dev Test User',
+      emailVerified: true,
+      image: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    session: {
+      token: 'dev-mock-session-token',
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+      userId: 'dev-test-user-id',
+      ipAddress: '127.0.0.1',
+      userAgent: 'dev-mode',
+    },
+  };
+}
