@@ -212,6 +212,31 @@ npm run lint # Run ESLint
 npm run format # Format code with Prettier
 \`\`\`
 
+### Disable Authentication for Local Testing
+
+For local development and testing, you can bypass the authentication requirement by setting an environment variable. This allows you to jump directly to the dashboard and test functionality without going through the login flow.
+
+**⚠️ WARNING: Only use this in local development, never in production!**
+
+To enable this feature:
+
+1. Create a `.env.local` file (or edit your existing one)
+2. Add the following line:
+
+\`\`\`env
+DISABLE_AUTH=true
+\`\`\`
+
+3. Restart your development server
+
+When authentication is disabled:
+- The dashboard and all authenticated API routes will work without login
+- A mock test user session is automatically created
+- Console warnings will indicate that authentication is disabled
+- This only works when `NODE_ENV=development`
+
+To re-enable authentication, set `DISABLE_AUTH=false` or remove the variable entirely.
+
 ### Code Quality
 
 - **ESLint**: Configured with Next.js, React, and TypeScript rules

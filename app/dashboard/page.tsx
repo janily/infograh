@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { auth, isAuthDisabled, getMockSession } from '@/lib/auth';
+import { auth, isAuthDisabled } from '@/lib/auth';
 
 import { DashboardClient } from './DashboardClient';
 
