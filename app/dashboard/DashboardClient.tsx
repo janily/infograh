@@ -175,6 +175,15 @@ export function DashboardClient() {
     }
   };
 
+  // Helper function to add a generated infographic to the gallery
+  const addInfographicToGallery = (id: string, url: string) => {
+    const newItem = { id, url };
+
+    setItems(prev => [newItem, ...prev]);
+    setLoadingSpinners([]);
+    setIsGenerating(false);
+  };
+
   const handleGenerateInfographic = async () => {
     if (!fetchedContent) return;
 
@@ -234,14 +243,10 @@ export function DashboardClient() {
               pollData.data?.data?.results?.[0]?.url
             ) {
               clearPollingRefs();
-              const newItem = {
-                id: taskId,
-                url: pollData.data.data.results[0].url,
-              };
-
-              setItems(prev => [newItem, ...prev]);
-              setLoadingSpinners([]);
-              setIsGenerating(false);
+              addInfographicToGallery(
+                taskId,
+                pollData.data.data.results[0].url
+              );
             } else if (pollData.data?.data?.status === 'failed') {
               clearPollingRefs();
               setError(
@@ -266,24 +271,16 @@ export function DashboardClient() {
         }, POLL_TIMEOUT_MS);
       } else if (result.data?.data?.results?.[0]?.url) {
         // Direct result returned (nested structure)
-        const newItem = {
-          id: result.data.data.id || `infographic-${Date.now()}`,
-          url: result.data.data.results[0].url,
-        };
-
-        setItems(prev => [newItem, ...prev]);
-        setLoadingSpinners([]);
-        setIsGenerating(false);
+        addInfographicToGallery(
+          result.data.data.id || `infographic-${Date.now()}`,
+          result.data.data.results[0].url
+        );
       } else if (result.data?.results?.[0]?.url) {
         // Direct result returned (stream mode, non-nested)
-        const newItem = {
-          id: result.data.id || `infographic-${Date.now()}`,
-          url: result.data.results[0].url,
-        };
-
-        setItems(prev => [newItem, ...prev]);
-        setLoadingSpinners([]);
-        setIsGenerating(false);
+        addInfographicToGallery(
+          result.data.id || `infographic-${Date.now()}`,
+          result.data.results[0].url
+        );
       } else {
         throw new Error('Unexpected response format from API');
       }
