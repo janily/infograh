@@ -204,9 +204,9 @@ export function DashboardClient() {
 
       const result = await response.json();
 
-      // The API returns an ID for polling
-      if (result.data?.id) {
-        const taskId = result.data.id;
+      // The API returns an ID for polling (nested in result.data.data.id)
+      if (result.data?.data?.id) {
+        const taskId = result.data.data.id;
 
         console.log('Infographic task started with ID:', taskId);
 
@@ -230,22 +230,23 @@ export function DashboardClient() {
             const pollData = await pollResponse.json();
 
             if (
-              pollData.data?.status === 'succeeded' &&
-              pollData.data?.results?.[0]?.url
+              pollData.data?.data?.status === 'succeeded' &&
+              pollData.data?.data?.results?.[0]?.url
             ) {
               clearPollingRefs();
               const newItem = {
                 id: taskId,
-                url: pollData.data.results[0].url,
+                url: pollData.data.data.results[0].url,
               };
 
               setItems(prev => [newItem, ...prev]);
               setLoadingSpinners([]);
               setIsGenerating(false);
-            } else if (pollData.data?.status === 'failed') {
+            } else if (pollData.data?.data?.status === 'failed') {
               clearPollingRefs();
               setError(
-                pollData.data?.failure_reason || 'Infographic generation failed'
+                pollData.data?.data?.failure_reason ||
+                  'Infographic generation failed'
               );
               setLoadingSpinners([]);
               setIsGenerating(false);
@@ -263,8 +264,18 @@ export function DashboardClient() {
           setLoadingSpinners([]);
           setIsGenerating(false);
         }, POLL_TIMEOUT_MS);
+      } else if (result.data?.data?.results?.[0]?.url) {
+        // Direct result returned (nested structure)
+        const newItem = {
+          id: result.data.data.id || `infographic-${Date.now()}`,
+          url: result.data.data.results[0].url,
+        };
+
+        setItems(prev => [newItem, ...prev]);
+        setLoadingSpinners([]);
+        setIsGenerating(false);
       } else if (result.data?.results?.[0]?.url) {
-        // Direct result returned (stream mode)
+        // Direct result returned (stream mode, non-nested)
         const newItem = {
           id: result.data.id || `infographic-${Date.now()}`,
           url: result.data.results[0].url,
