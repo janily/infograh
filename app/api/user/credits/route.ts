@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
-import { auth } from '@/lib/auth';
+import { getSessionOrMock } from '@/lib/auth';
 import { getTotalAvailableCredits } from '@/lib/credits';
 
 export async function GET() {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSessionOrMock(await headers());
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

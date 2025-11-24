@@ -73,3 +73,93 @@ export const auth = betterAuth({
     },
   },
 });
+
+// Constants for mock session configuration
+const MOCK_SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+/**
+ * Session type that matches better-auth session structure
+ * Note: This is a simplified version based on the actual usage in the app.
+ * For a production app, consider importing from better-auth types if available.
+ */
+type Session = {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    emailVerified: boolean;
+    image?: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  session: {
+    id?: string;
+    token: string;
+    expiresAt: Date;
+    userId: string;
+    ipAddress?: string | null;
+    userAgent?: string | null;
+    createdAt?: Date;
+    updatedAt?: Date;
+  };
+};
+
+/**
+ * Check if authentication is disabled for development
+ * WARNING: Only use in local development, never in production!
+ */
+export function isAuthDisabled(): boolean {
+  return (
+    process.env.DISABLE_AUTH === 'true' &&
+    process.env.NODE_ENV === 'development'
+  );
+}
+
+/**
+ * Get a mock session for development when authentication is disabled
+ * This allows testing functionality without going through the login flow
+ */
+export function getMockSession(): Session | null {
+  if (!isAuthDisabled()) {
+    return null;
+  }
+
+  // Return a mock session with a test user
+  return {
+    user: {
+      id: 'dev-test-user-id',
+      email: 'dev@test.com',
+      name: 'Dev Test User',
+      emailVerified: true,
+      image: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    session: {
+      token: 'dev-mock-session-token',
+      expiresAt: new Date(Date.now() + MOCK_SESSION_DURATION_MS),
+      userId: 'dev-test-user-id',
+      ipAddress: '127.0.0.1',
+      userAgent: 'dev-mode',
+    },
+  };
+}
+
+/**
+ * Get session with authentication bypass support for development
+ * This is a helper function that handles the authentication check and mock session logic
+ *
+ * @param headers - Request headers for session validation
+ * @returns Session object or null if not authenticated
+ */
+export async function getSessionOrMock(
+  headers: Headers
+): Promise<Session | null> {
+  if (isAuthDisabled()) {
+    console.log('⚠️  Authentication disabled - using mock session');
+
+    return getMockSession();
+  }
+
+  return await auth.api.getSession({ headers });
+}
