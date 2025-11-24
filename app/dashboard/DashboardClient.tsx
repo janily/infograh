@@ -239,19 +239,15 @@ export function DashboardClient() {
             const pollData = await pollResponse.json();
 
             if (
-              pollData.data?.data?.status === 'succeeded' &&
-              pollData.data?.data?.results?.[0]?.url
+              pollData.data?.status === 'succeeded' &&
+              pollData.data?.results?.[0]?.url
             ) {
               clearPollingRefs();
-              addInfographicToGallery(
-                taskId,
-                pollData.data.data.results[0].url
-              );
-            } else if (pollData.data?.data?.status === 'failed') {
+              addInfographicToGallery(taskId, pollData.data.results[0].url);
+            } else if (pollData.data?.status === 'failed') {
               clearPollingRefs();
               setError(
-                pollData.data?.data?.failure_reason ||
-                  'Infographic generation failed'
+                pollData.data?.failure_reason || 'Infographic generation failed'
               );
               setLoadingSpinners([]);
               setIsGenerating(false);
