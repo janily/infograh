@@ -75,6 +75,31 @@ export const auth = betterAuth({
 });
 
 /**
+ * Session type that matches better-auth session structure
+ */
+type Session = {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    emailVerified: boolean;
+    image?: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  session: {
+    id?: string;
+    token: string;
+    expiresAt: Date;
+    userId: string;
+    ipAddress?: string | null;
+    userAgent?: string | null;
+    createdAt?: Date;
+    updatedAt?: Date;
+  };
+};
+
+/**
  * Check if authentication is disabled for development
  * WARNING: Only use in local development, never in production!
  */
@@ -89,7 +114,7 @@ export function isAuthDisabled(): boolean {
  * Get a mock session for development when authentication is disabled
  * This allows testing functionality without going through the login flow
  */
-export function getMockSession() {
+export function getMockSession(): Session | null {
   if (!isAuthDisabled()) {
     return null;
   }
@@ -113,4 +138,23 @@ export function getMockSession() {
       userAgent: 'dev-mode',
     },
   };
+}
+
+/**
+ * Get session with authentication bypass support for development
+ * This is a helper function that handles the authentication check and mock session logic
+ *
+ * @param headers - Request headers for session validation
+ * @returns Session object or null if not authenticated
+ */
+export async function getSessionOrMock(
+  headers: Headers
+): Promise<Session | null> {
+  if (isAuthDisabled()) {
+    console.log('⚠️  Authentication disabled - using mock session');
+
+    return getMockSession();
+  }
+
+  return await auth.api.getSession({ headers });
 }

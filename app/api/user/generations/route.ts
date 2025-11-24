@@ -1,22 +1,12 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
-import { auth, isAuthDisabled, getMockSession } from '@/lib/auth';
+import { getSessionOrMock } from '@/lib/auth';
 import { getUserGenerations } from '@/lib/credits';
 
 export async function GET() {
   try {
-    // Check if authentication is disabled for development
-    let session;
-
-    if (isAuthDisabled()) {
-      session = getMockSession();
-      console.log(
-        '⚠️  Authentication disabled - using mock session for generations API'
-      );
-    } else {
-      session = await auth.api.getSession({ headers: await headers() });
-    }
+    const session = await getSessionOrMock(await headers());
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
