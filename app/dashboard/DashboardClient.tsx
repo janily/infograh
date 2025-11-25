@@ -13,6 +13,7 @@ import { ImageUploadSection } from '@/components/dashboard/ImageUploadSection';
 import { GenerationSettingsPanel } from '@/components/dashboard/GenerationSettingsPanel';
 import { InfographicSettingsPanel } from '@/components/dashboard/InfographicSettingsPanel';
 import { GeneratedGallery } from '@/components/dashboard/GeneratedGallery';
+import { GeneratingState } from '@/components/dashboard/generating/GeneratingState';
 import { FirstTimeUserModal } from '@/components/first-time-user-modal';
 import { API_CONFIG, CREDITS_CONFIG } from '@/config/app-config';
 import { type InfographicStyle } from '@/lib/infographic-styles';
@@ -513,11 +514,23 @@ export function DashboardClient() {
               </div>
 
               <div className='lg:col-span-8 xl:col-span-9'>
-                <GeneratedGallery
-                  isLoadingExisting={isLoadingExisting}
-                  items={items}
-                  loadingSpinners={loadingSpinners}
-                />
+                {/* Show GeneratingState when generating infographics */}
+                {mode === 'infographic' && isGenerating ? (
+                  <GeneratingState
+                    onCancel={() => {
+                      clearPollingRefs();
+                      setIsGenerating(false);
+                      setLoadingSpinners([]);
+                      setError(null);
+                    }}
+                  />
+                ) : (
+                  <GeneratedGallery
+                    isLoadingExisting={isLoadingExisting}
+                    items={items}
+                    loadingSpinners={mode === 'headshot' ? loadingSpinners : []}
+                  />
+                )}
               </div>
             </div>
           </div>
