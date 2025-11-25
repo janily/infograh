@@ -45,6 +45,8 @@ export const themeConfig = {
   // Typography System
   typography: {
     // Font families
+    // Note: CSS variables --font-sans and --font-mono are defined in app/layout.tsx
+    // using Next.js font optimization with Inter and Fira Code fonts
     fontFamily: {
       sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
       mono: ['var(--font-mono)', 'monospace'],

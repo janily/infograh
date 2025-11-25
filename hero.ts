@@ -29,7 +29,7 @@ const config = {
 
       // Custom spacing values
       spacing: {
-        '14': '3.5rem',
+        14: '3.5rem',
       },
 
       // Custom border radius

@@ -3,6 +3,9 @@ const { heroui } = require('@heroui/theme');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  // Content paths for Tailwind to scan for class usage
+  // Broad patterns used for comprehensive coverage in development
+  // For production optimization, consider more specific paths
   content: [
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
