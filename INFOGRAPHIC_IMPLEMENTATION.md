@@ -1,6 +1,7 @@
 # Infographic Generation Implementation
 
 ## Overview
+
 This implementation adds infographic generation capabilities to the application using the Unifuncs Web Reader API and GRSAI Nano Banana Pro API.
 
 ## Architecture
@@ -8,6 +9,7 @@ This implementation adds infographic generation capabilities to the application 
 ### Backend Endpoints
 
 #### 1. `/api/fetch-content`
+
 - **Purpose**: Fetches web page content from a URL using Unifuncs API
 - **Method**: POST
 - **Request Body**:
@@ -30,6 +32,7 @@ This implementation adds infographic generation capabilities to the application 
 - **Environment Variable**: `UNIFUNCS_API_KEY`
 
 #### 2. `/api/generate-infographic`
+
 - **Purpose**: Generates infographic from content using GRSAI Nano Banana Pro
 - **Method**: POST
 - **Request Body**:
@@ -54,6 +57,7 @@ This implementation adds infographic generation capabilities to the application 
 - **Environment Variable**: `GRSAI_API_KEY`
 
 #### 3. `/api/poll-infographic`
+
 - **Purpose**: Polls for infographic generation results
 - **Method**: GET
 - **Query Parameters**: `taskId=string`
@@ -79,6 +83,7 @@ This implementation adds infographic generation capabilities to the application 
 ### Frontend Components
 
 #### 1. InfographicSettingsPanel
+
 - **Location**: `/components/dashboard/InfographicSettingsPanel.tsx`
 - **Features**:
   - URL input field
@@ -92,6 +97,7 @@ This implementation adds infographic generation capabilities to the application 
   - Callbacks for all user actions
 
 #### 2. DashboardClient Updates
+
 - **Location**: `/app/dashboard/DashboardClient.tsx`
 - **New Features**:
   - Mode switcher (Headshot vs Infographic)
@@ -104,17 +110,20 @@ This implementation adds infographic generation capabilities to the application 
 ## Infographic Styles
 
 1. **Fun & Playful** (`FUN_PLAYFUL`)
+
    - Vibrant 2D vector illustrations
    - Bright colors, rounded shapes
    - Friendly tone
 
 2. **Clean Minimalist** (`CLEAN_MINIMALIST`)
+
    - Ultra-minimalist design
    - Lots of whitespace, thin lines
    - Limited color palette (1-2 accent colors)
    - Sophisticated and airy
 
 3. **Dark Mode Tech** (`DARK_MODE_TECH`)
+
    - Dark slate/black background
    - Glowing accent colors (cyan, lime green)
    - Technical aesthetic
@@ -128,6 +137,7 @@ This implementation adds infographic generation capabilities to the application 
 ## Workflow
 
 ### Infographic Generation Flow
+
 1. User enters URL in dashboard
 2. User clicks "Fetch Content"
 3. Frontend calls `/api/fetch-content`
@@ -143,6 +153,7 @@ This implementation adds infographic generation capabilities to the application 
 ## Environment Setup
 
 Add to `.env.local`:
+
 ```env
 # Unifuncs Web Reader - Get your key from https://unifuncs.com
 UNIFUNCS_API_KEY=your_unifuncs_api_key
@@ -154,6 +165,7 @@ GRSAI_API_KEY=your_grsai_api_key
 ## Configuration
 
 All endpoints are configured in `/config/app-config.ts`:
+
 ```typescript
 ENDPOINTS: {
   FETCH_CONTENT: '/api/fetch-content',
@@ -184,6 +196,7 @@ To test the implementation:
 The implementation uses the GRSAI Nano Banana API with the following specifics:
 
 1. **Generation Request** (`/v1/draw/nano-banana`):
+
    - Uses `webHook: "-1"` to get immediate task ID response
    - Returns: `{ code: 0, msg: "success", data: { id: "task-id" } }`
 

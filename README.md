@@ -230,6 +230,7 @@ DISABLE_AUTH=true
 3. Restart your development server
 
 When authentication is disabled:
+
 - The dashboard and all authenticated API routes will work without login
 - A mock test user session is automatically created
 - Console warnings will indicate that authentication is disabled
