@@ -13,6 +13,7 @@ import { ImageUploadSection } from '@/components/dashboard/ImageUploadSection';
 import { GenerationSettingsPanel } from '@/components/dashboard/GenerationSettingsPanel';
 import { InfographicSettingsPanel } from '@/components/dashboard/InfographicSettingsPanel';
 import { GeneratedGallery } from '@/components/dashboard/GeneratedGallery';
+import { GeneratingState } from '@/components/dashboard/generating/GeneratingState';
 import { FirstTimeUserModal } from '@/components/first-time-user-modal';
 import { API_CONFIG, CREDITS_CONFIG } from '@/config/app-config';
 import { type InfographicStyle } from '@/lib/infographic-styles';
@@ -248,22 +249,38 @@ export function DashboardClient() {
               pollData.data?.status === 'succeeded' &&
               pollData.data?.results?.[0]?.url
             ) {
-              console.log('Infographic succeeded! URL:', pollData.data.results[0].url);
+              console.log(
+                'Infographic succeeded! URL:',
+                pollData.data.results[0].url
+              );
               clearPollingRefs();
               addInfographicToGallery(taskId, pollData.data.results[0].url);
             } else if (pollData.data?.status === 'failed') {
-              console.error('Infographic failed:', pollData.data?.failure_reason);
+              console.error(
+                'Infographic failed:',
+                pollData.data?.failure_reason
+              );
               clearPollingRefs();
               setError(
                 pollData.data?.failure_reason || 'Infographic generation failed'
               );
               setLoadingSpinners([]);
               setIsGenerating(false);
-            } else if (pollData.data?.status === 'pending' || pollData.data?.status === 'running') {
-              console.log('Infographic still in progress, status:', pollData.data?.status);
+            } else if (
+              pollData.data?.status === 'pending' ||
+              pollData.data?.status === 'running'
+            ) {
+              console.log(
+                'Infographic still in progress, status:',
+                pollData.data?.status
+              );
               // Continue polling
             } else {
-              console.warn('Unexpected poll response status:', pollData.data?.status, pollData);
+              console.warn(
+                'Unexpected poll response status:',
+                pollData.data?.status,
+                pollData
+              );
             }
           } catch (pollError) {
             console.error('Polling error:', pollError);
@@ -280,7 +297,10 @@ export function DashboardClient() {
         }, POLL_TIMEOUT_MS);
       } else if (result.data?.results?.[0]?.url) {
         // Direct result returned (without polling, already completed)
-        console.log('Infographic completed immediately! URL:', result.data.results[0].url);
+        console.log(
+          'Infographic completed immediately! URL:',
+          result.data.results[0].url
+        );
         addInfographicToGallery(
           result.data.id || `infographic-${Date.now()}`,
           result.data.results[0].url
@@ -494,11 +514,23 @@ export function DashboardClient() {
               </div>
 
               <div className='lg:col-span-8 xl:col-span-9'>
-                <GeneratedGallery
-                  isLoadingExisting={isLoadingExisting}
-                  items={items}
-                  loadingSpinners={loadingSpinners}
-                />
+                {/* Show GeneratingState when generating infographics */}
+                {mode === 'infographic' && isGenerating ? (
+                  <GeneratingState
+                    onCancel={() => {
+                      clearPollingRefs();
+                      setIsGenerating(false);
+                      setLoadingSpinners([]);
+                      setError(null);
+                    }}
+                  />
+                ) : (
+                  <GeneratedGallery
+                    isLoadingExisting={isLoadingExisting}
+                    items={items}
+                    loadingSpinners={mode === 'headshot' ? loadingSpinners : []}
+                  />
+                )}
               </div>
             </div>
           </div>

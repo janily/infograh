@@ -109,8 +109,12 @@ VISUAL DESIGN RULES:
     // when webHook is set to "-1"
     if (result.code !== 0) {
       console.error('GRSAI API error:', result.msg, result);
+
       return NextResponse.json(
-        { error: result.msg || 'Failed to generate infographic', code: result.code },
+        {
+          error: result.msg || 'Failed to generate infographic',
+          code: result.code,
+        },
         { status: 400 }
       );
     }
