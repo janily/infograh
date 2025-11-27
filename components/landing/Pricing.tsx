@@ -91,6 +91,27 @@ export function Pricing() {
         >
           Pay once. Keep everything you generate.
         </motion.p>
+
+        {/* Free Beta Banner */}
+        <motion.div
+          className='mt-6 max-w-2xl mx-auto'
+          initial='hidden'
+          variants={fadeUp}
+          viewport={{ once: true }}
+          whileInView='visible'
+        >
+          <div className='bg-gradient-to-r from-success/10 via-success/5 to-success/10 border border-success/30 rounded-2xl px-6 py-4 text-center'>
+            <div className='flex items-center justify-center gap-2 mb-1'>
+              <span className='text-2xl'>🎉</span>
+              <span className='text-success font-bold text-lg'>Currently Free!</span>
+              <span className='text-2xl'>🎉</span>
+            </div>
+            <p className='text-default-600 text-sm'>
+              We&apos;re in beta - enjoy unlimited infographic generation for free. 
+              No credit card required.
+            </p>
+          </div>
+        </motion.div>
         <div className='grid gap-6 md:grid-cols-2 mt-8 max-w-4xl mx-auto'>
           {/* Starter Tier */}
           <motion.div

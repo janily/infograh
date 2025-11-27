@@ -1,8 +1,6 @@
 'use client';
 
-import { Card, CardBody } from '@heroui/card';
 import { motion, Variants } from 'framer-motion';
-import Image from 'next/image';
 
 import { title } from '@/components/primitives';
 
@@ -47,10 +45,10 @@ export function HowItWorks() {
 
   return (
     <section
-      className='w-full min-h-screen snap-start flex items-center'
+      className='w-full py-20'
       id='how-it-works'
     >
-      <div className='container mx-auto max-w-7xl px-6 py-16'>
+      <div className='container mx-auto max-w-5xl px-6'>
         <motion.h2
           className={title({
             size: 'md',
@@ -74,70 +72,37 @@ export function HowItWorks() {
           Transform articles into infographics in three simple steps
         </motion.p>
 
-        {/* Steps section - Top */}
+        {/* Steps section */}
         <motion.div
-          className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-12'
+          className='grid grid-cols-1 md:grid-cols-3 gap-8'
           initial='hidden'
           variants={staggerContainer}
           viewport={{ once: true }}
           whileInView='visible'
         >
-          {steps.map(step => (
-            <motion.div key={step.step} variants={fadeUp}>
-              <Card className='bg-content1/60 border border-default-100 hover:border-primary/30 transition-colors h-full'>
-                <CardBody className='p-4 text-center'>
-                  <div className='flex flex-col items-center gap-3'>
-                    <div className='w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-pink-500 text-white grid place-items-center font-bold text-sm shadow-lg'>
-                      {step.step}
-                    </div>
-                    <div className='space-y-1'>
-                      <div className='flex items-center justify-center gap-2'>
-                        <span className='text-xl'>{step.icon}</span>
-                        <h3 className='text-lg font-semibold'>{step.title}</h3>
-                      </div>
-                      <p className='text-default-600 text-sm leading-relaxed'>
-                        {step.description}
-                      </p>
-                    </div>
-                  </div>
-                </CardBody>
-              </Card>
+          {steps.map((step) => (
+            <motion.div 
+              key={step.step} 
+              className='flex flex-col items-center text-center'
+              variants={fadeUp}
+            >
+              {/* Step number */}
+              <div className='w-14 h-14 rounded-full bg-gradient-to-br from-primary to-secondary text-white grid place-items-center font-bold text-xl shadow-lg mb-5'>
+                {step.step}
+              </div>
+              
+              {/* Icon and title */}
+              <div className='flex items-center justify-center gap-2 mb-3'>
+                <span className='text-2xl'>{step.icon}</span>
+                <h3 className='text-xl font-semibold'>{step.title}</h3>
+              </div>
+              
+              {/* Description */}
+              <p className='text-default-500 text-sm leading-relaxed max-w-xs'>
+                {step.description}
+              </p>
             </motion.div>
           ))}
-        </motion.div>
-
-        {/* Screenshot section - Full width */}
-        <motion.div
-          className='w-full'
-          initial='hidden'
-          variants={fadeUp}
-          viewport={{ once: true }}
-          whileInView='visible'
-        >
-          <div className='relative'>
-            {/* Background decoration */}
-            <div className='absolute -inset-8 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-3xl blur-3xl' />
-
-            {/* Main screenshot container */}
-            <div className='relative bg-content1/80 backdrop-blur-sm border border-default-200 rounded-3xl p-6 shadow-2xl'>
-              <div className='relative aspect-[16/10] rounded-2xl overflow-hidden'>
-                <Image
-                  fill
-                  priority
-                  alt='url2info Dashboard Screenshot'
-                  className='object-cover object-top'
-                  src='/images/screenshot-pictureai.png'
-                />
-
-                {/* Overlay with subtle gradient */}
-                <div className='absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent' />
-              </div>
-            </div>
-
-            {/* Decorative elements */}
-            <div className='absolute top-16 -left-16 w-32 h-32 bg-primary/5 rounded-full blur-2xl' />
-            <div className='absolute bottom-16 -right-16 w-40 h-40 bg-secondary/5 rounded-full blur-2xl' />
-          </div>
         </motion.div>
       </div>
     </section>

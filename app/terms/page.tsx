@@ -16,11 +16,11 @@ const TermsAndConditions: React.FC = () => {
         <Card className='bg-content1/60 border border-default-100'>
           <CardBody className='p-8'>
             <h1 className='text-4xl font-bold mb-6 text-foreground'>
-              Terms and Conditions for PictureMe AI
+              Terms and Conditions for url2info
             </h1>
 
             <p className='mb-6 text-default-600 text-lg'>
-              By using PictureMe AI, you agree to comply with and be bound by
+              By using url2info, you agree to comply with and be bound by
               the following terms and conditions. Please read these terms
               carefully before using our platform.
             </p>
@@ -29,99 +29,82 @@ const TermsAndConditions: React.FC = () => {
               1. Acceptance of Terms
             </h2>
             <p className='mb-6 text-default-600'>
-              By accessing or using PictureMe AI, you agree to be bound by these
+              By accessing or using url2info, you agree to be bound by these
               Terms and Conditions and all applicable laws and regulations. If
               you do not agree with any part of these terms, you may not use our
               services.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
-              2. Use of the Platform
+              2. Service Description
             </h2>
             <p className='mb-6 text-default-600'>
-              PictureMe AI provides AI-powered image generation and
-              transformation services for creating professional portraits and
-              styled images. Our service utilizes third-party AI models from{' '}
+              url2info is an AI-powered service that transforms web articles and 
+              content into visual infographics. Our service fetches content from 
+              URLs you provide and uses{' '}
               <Link
                 isExternal
                 showAnchorIcon
                 className='text-primary hover:text-primary/80'
-                href='https://fal.ai'
+                href='https://grsai.com'
               >
-                Fal.ai
-              </Link>
-              . By using our service, you also agree to their respective terms
-              of service.
+                Nano Banana Pro
+              </Link>{' '}
+              AI technology to generate infographic images. By using our service, 
+              you also agree to their respective terms of service.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
               3. User Responsibilities
             </h2>
             <p className='mb-4 text-default-600'>
-              When using PictureMe AI, you agree to:
+              When using url2info, you agree to:
             </p>
             <ul className='list-disc pl-8 mb-6 text-default-600 space-y-2'>
-              <li>Only upload images that you own or have the rights to use</li>
-              <li>
-                Not upload any content that is illegal, inappropriate, or
-                violates others&apos; rights
-              </li>
-              <li>
-                Not attempt to circumvent any technical limitations or security
-                measures
-              </li>
-              <li>
-                Not use the service for any illegal or unauthorized purpose
-              </li>
-              <li>
-                Only upload clear portrait photos of yourself for generation
-              </li>
+              <li>Only provide URLs to content that you have the right to use or is publicly accessible</li>
+              <li>Not use the service to process content that is illegal, inappropriate, or violates others&apos; rights</li>
+              <li>Not attempt to circumvent any technical limitations or security measures</li>
+              <li>Not use the service for any illegal or unauthorized purpose</li>
+              <li>Respect the intellectual property rights of original content creators</li>
             </ul>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
               4. Content Guidelines
             </h2>
             <p className='mb-4 text-default-600'>
-              Users must ensure that all uploaded content:
+              Users must ensure that the URLs provided lead to content that:
             </p>
             <ul className='list-disc pl-8 mb-6 text-default-600 space-y-2'>
               <li>Is not pornographic or sexually explicit</li>
               <li>Does not promote violence or hate speech</li>
               <li>Does not infringe on any intellectual property rights</li>
-              <li>Is not intended to harass or bully others</li>
-              <li>Contains only your own face and likeness</li>
+              <li>Is publicly accessible or you have permission to use</li>
+              <li>Complies with applicable laws and regulations</li>
             </ul>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
-              5. Generated Content and Ownership
+              5. Generated Infographics
             </h2>
             <p className='mb-6 text-default-600'>
-              By using our AI image generation tools, you acknowledge that the
-              generated images are created based on your input and our AI
-              models. You retain ownership of the generated images for personal
-              and commercial use. We do not guarantee the uniqueness or
-              originality of generated content.
-            </p>
-
-            <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
-              6. Credit System and Purchases
-            </h2>
-            <p className='mb-4 text-default-600'>
-              PictureMe AI operates on a credit-based system:
+              By using our AI infographic generation tools, you acknowledge that:
             </p>
             <ul className='list-disc pl-8 mb-6 text-default-600 space-y-2'>
-              <li>Each image generation consumes 1 credit</li>
-              <li>
-                Credits are purchased through our Starter (20 credits for $12)
-                or Creator (40 credits for $20) packages
-              </li>
-              <li>All purchases are final and non-refundable</li>
-              <li>Credits do not expire</li>
-              <li>
-                Creator package users receive additional features including bulk
-                download capabilities
-              </li>
+              <li>Generated infographics are created based on the content from the URLs you provide</li>
+              <li>You may use generated infographics for personal and commercial purposes</li>
+              <li>We do not guarantee the accuracy or completeness of the generated content</li>
+              <li>Generated images are available for download for a limited time (approximately 2 hours)</li>
+              <li>You should download images promptly as they may expire</li>
             </ul>
+
+            <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
+              6. Service Availability
+            </h2>
+            <p className='mb-6 text-default-600'>
+              url2info is currently provided free of charge during our beta period. 
+              We reserve the right to modify, suspend, or discontinue the service 
+              at any time without prior notice. We may introduce paid features or 
+              usage limits in the future.
+            </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
               7. Limitation of Liability
@@ -129,19 +112,19 @@ const TermsAndConditions: React.FC = () => {
             <p className='mb-6 text-default-600'>
               We shall not be liable for any indirect, incidental, special,
               consequential, or punitive damages resulting from your use of or
-              inability to use PictureMe AI. The platform is provided on an
+              inability to use url2info. The platform is provided on an
               &quot;as-is&quot; basis, and we make no warranties regarding its
-              performance or results.
+              performance, accuracy, or results.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
-              8. Data and Privacy
+              8. Intellectual Property
             </h2>
             <p className='mb-6 text-default-600'>
-              Your uploaded images and generated content are processed securely
-              and are not shared with third parties for marketing purposes.
-              Please refer to our Privacy Policy for detailed information about
-              data handling.
+              The url2info service, including its design, features, and underlying 
+              technology, is protected by intellectual property rights. You may not 
+              copy, modify, or distribute any part of the service without our permission. 
+              The original content from URLs remains the property of their respective owners.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -149,7 +132,7 @@ const TermsAndConditions: React.FC = () => {
             </h2>
             <p className='mb-6 text-default-600'>
               We reserve the right to modify these terms at any time. Your
-              continued use of PictureMe AI after changes are posted constitutes
+              continued use of url2info after changes are posted constitutes
               your acceptance of the modified terms.
             </p>
 
@@ -158,12 +141,11 @@ const TermsAndConditions: React.FC = () => {
             </h2>
             <p className='mb-6 text-default-600'>
               These Terms and Conditions shall be governed by and construed in
-              accordance with the laws of the United States, without regard to
-              its conflict of law provisions.
+              accordance with applicable laws, without regard to conflict of law provisions.
             </p>
 
             <p className='mt-8 text-sm text-default-500 border-t border-default-200 pt-6'>
-              Last updated: December 2024
+              Last updated: November 2025
             </p>
           </CardBody>
         </Card>

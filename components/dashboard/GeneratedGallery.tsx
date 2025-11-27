@@ -14,33 +14,20 @@ type GeneratedItem = { id: string; url: string };
 
 interface GeneratedGalleryProps {
   items: GeneratedItem[];
-  loadingSpinners: string[];
   isLoadingExisting: boolean;
 }
 
 export function GeneratedGallery({
   items,
-  loadingSpinners,
   isLoadingExisting,
 }: GeneratedGalleryProps) {
-  const showEmptyState =
-    !isLoadingExisting && items.length === 0 && loadingSpinners.length === 0;
+  const showEmptyState = !isLoadingExisting && items.length === 0;
 
   return (
     <>
       <RetentionNotice />
 
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-        {/* Loading spinners for images being generated */}
-        {loadingSpinners.map(spinnerId => (
-          <div
-            key={spinnerId}
-            className='relative aspect-square overflow-hidden rounded-xl border border-default-100 bg-content2/50 flex items-center justify-center'
-          >
-            <Spinner color='primary' size='lg' />
-          </div>
-        ))}
-
         {/* Generated images */}
         {items.map(item => (
           <ErrorBoundary
@@ -53,11 +40,11 @@ export function GeneratedGallery({
               </Card>
             }
           >
-            <ImageLightbox alt='Generated image' src={item.url}>
-              <div className='relative aspect-square overflow-hidden rounded-xl border border-default-100 bg-content2/50 group'>
+            <ImageLightbox alt='Generated infographic' src={item.url}>
+              <div className='relative aspect-[3/4] overflow-hidden rounded-xl border border-default-100 bg-content2/50 group'>
                 <SafeImage
                   fill
-                  alt='Generated'
+                  alt='Generated infographic'
                   className='object-contain object-center transition-transform group-hover:scale-105'
                   src={item.url}
                 />
@@ -75,35 +62,41 @@ export function GeneratedGallery({
 
         {/* Loading state for existing images */}
         {isLoadingExisting && (
-          <>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={`loading-${i}`}
-                className='relative aspect-square overflow-hidden rounded-xl border border-default-100 bg-content2/50 flex items-center justify-center'
-              >
-                <Spinner color='default' size='lg' />
-              </div>
-            ))}
-          </>
+          <div className='col-span-full flex items-center justify-center py-12'>
+            <div className='flex flex-col items-center gap-3'>
+              <Spinner color='primary' size='lg' />
+              <p className='text-default-500 text-sm'>Loading your infographics...</p>
+            </div>
+          </div>
         )}
 
         {/* Empty state */}
         {showEmptyState && (
           <div className='col-span-full'>
-            <div className='min-h-[50vh] flex flex-col items-center justify-center gap-6 text-center'>
-              <p className='text-default-500 text-sm'>
-                Your generated images will appear here. Upload an image and
-                click Generate to create unique variations. Each generation
-                creates one unique image.
-              </p>
-              <div className='grid grid-cols-3 gap-4 w-full max-w-xl'>
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    aria-hidden
-                    className='relative aspect-square rounded-xl border-2 border-dashed border-default-200 bg-content2/40'
+            <div className='min-h-[50vh] flex flex-col items-center justify-center gap-6 text-center px-4'>
+              <div className='w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center'>
+                <svg
+                  className='w-12 h-12 text-primary'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth={1.5}
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    d='M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
-                ))}
+                </svg>
+              </div>
+              <div className='space-y-2'>
+                <h3 className='text-lg font-semibold text-default-700'>
+                  No infographics yet
+                </h3>
+                <p className='text-default-500 text-sm max-w-md'>
+                  Enter a URL, fetch its content, then click "Generate Infographic" 
+                  to create beautiful infographics from any article.
+                </p>
               </div>
             </div>
           </div>
