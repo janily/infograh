@@ -61,7 +61,7 @@ const buildNavMenuItems = () => {
 };
 
 export const siteConfig = {
-  name: 'url2info',
+  name: 'url2infographic - Turn your URL into infographic',
   description:
     'Turn your URLs into clean infographics in seconds. Support WeChat Articles, Blogs, and News.',
   navItems: buildNavItems(),

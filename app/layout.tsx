@@ -18,31 +18,31 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
 
-  authors: [{ name: 'url2info' }],
-  creator: 'url2info',
-  publisher: 'url2info',
+  authors: [{ name: 'url2infographic' }],
+  creator: 'url2infographic',
+  publisher: 'url2infographic',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://url2infograph.com'),
+  metadataBase: new URL('https://url2infographic.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://url2infograph.com',
+    url: 'https://url2infographic.com',
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
       {
-        url: 'https://url2infograph.com/og-image.jpg',
+        url: 'https://url2infographic.com/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'url2info - Turn URLs into clean infographics',
+        alt: 'url2infographic - Turn URLs into clean infographics',
       },
     ],
   },
@@ -50,8 +50,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteConfig.name,
     description: siteConfig.description,
-    images: ['https://url2infograph.com/og-image.jpg'],
-    creator: '@url2infograph',
+    images: ['https://url2infographic.com/og-image.jpg'],
+    creator: '@url2infographic',
   },
   robots: {
     index: true,
@@ -66,8 +66,6 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
 };
