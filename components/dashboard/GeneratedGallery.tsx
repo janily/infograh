@@ -67,7 +67,7 @@ export function GeneratedGallery({
               <Spinner color='primary' size='lg' />
               <p className='text-default-500 text-sm'>Loading your infographics...</p>
             </div>
-          </div>
+              </div>
         )}
 
         {/* Empty state */}

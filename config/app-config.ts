@@ -52,7 +52,7 @@ export const API_CONFIG = {
   // External services
   EXTERNAL: {
     FAL_AI_URL: 'https://fal.ai',
-    TWITTER_URL: 'https://x.com/deifosv',
+    TWITTER_URL: 'https://x.com/janilychen',
     FEEDBACK_WIDGET_URL:
       'https://www.feedbackbasket.com/api/widget/script/cme3q0an50001jm04d6extjp1',
   },

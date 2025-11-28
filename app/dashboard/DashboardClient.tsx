@@ -266,33 +266,33 @@ export function DashboardClient() {
             <div className='grid grid-cols-1 lg:grid-cols-12 gap-8'>
               <div className='lg:col-span-4 xl:col-span-3'>
                 <div className='lg:sticky lg:top-20 flex flex-col gap-6'>
-                  <Card className='bg-content1/60 border border-default-100'>
-                    <div className='p-6 flex flex-col gap-6'>
-                      <InfographicSettingsPanel
-                        canGenerate={canGenerate}
-                        isFetchingContent={isFetchingContent}
-                        isGenerating={isGenerating}
-                        language={language}
-                        style={infographicStyle}
-                        url={url}
-                        onFetchContent={handleFetchContent}
-                        onGenerateInfographic={handleGenerateInfographic}
-                        onLanguageChange={setLanguage}
-                        onStyleChange={setInfographicStyle}
-                        onUrlChange={setUrl}
-                      />
-                      {error && (
-                        <div className='text-danger text-sm p-4 bg-danger-50 rounded-lg'>
-                          {error}
-                        </div>
-                      )}
-                      {fetchedContent && (
-                        <div className='text-success text-sm p-4 bg-success-50 rounded-lg'>
-                          ✓ Content fetched successfully!
-                        </div>
-                      )}
-                    </div>
-                  </Card>
+                    <Card className='bg-content1/60 border border-default-100'>
+                      <div className='p-6 flex flex-col gap-6'>
+                        <InfographicSettingsPanel
+                          canGenerate={canGenerate}
+                          isFetchingContent={isFetchingContent}
+                          isGenerating={isGenerating}
+                          language={language}
+                          style={infographicStyle}
+                          url={url}
+                          onFetchContent={handleFetchContent}
+                          onGenerateInfographic={handleGenerateInfographic}
+                          onLanguageChange={setLanguage}
+                          onStyleChange={setInfographicStyle}
+                          onUrlChange={setUrl}
+                        />
+                        {error && (
+                          <div className='text-danger text-sm p-4 bg-danger-50 rounded-lg'>
+                            {error}
+                          </div>
+                        )}
+                        {fetchedContent && (
+                          <div className='text-success text-sm p-4 bg-success-50 rounded-lg'>
+                            ✓ Content fetched successfully!
+                          </div>
+                        )}
+                      </div>
+                    </Card>
                 </div>
               </div>
 
@@ -306,10 +306,10 @@ export function DashboardClient() {
                     }}
                   />
                 ) : (
-                  <GeneratedGallery
-                    isLoadingExisting={isLoadingExisting}
-                    items={items}
-                  />
+                <GeneratedGallery
+                  isLoadingExisting={isLoadingExisting}
+                  items={items}
+                />
                 )}
               </div>
             </div>

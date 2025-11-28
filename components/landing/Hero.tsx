@@ -456,14 +456,14 @@ export function Hero() {
           <motion.div
             key="idle"
             animate="visible"
-            className="w-full max-w-xl bg-content1 rounded-xl shadow-lg p-6 md:p-8"
+            className="w-full max-w-xl bg-content1 rounded-xl shadow-lg p-4 md:p-6"
             exit="exit"
             initial="hidden"
             variants={fadeUp}
           >
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {/* URL Input */}
-              <div className="flex flex-col w-full h-14 md:h-16">
+              <div className="flex flex-col w-full h-12 md:h-14">
                 <div className="flex w-full flex-1 items-stretch rounded-lg h-full border-2 border-default-200 focus-within:ring-2 focus-within:ring-success focus-within:border-success">
                   <div className="text-default-400 flex items-center justify-center pl-4">
                     <svg
@@ -507,12 +507,12 @@ export function Hero() {
               </div>
 
               {/* Style and Language Selectors */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 <Select
                   aria-label="Infographic Style"
                   classNames={{
-                    trigger: 'h-12 bg-default-100 border-2 border-default-200 hover:border-default-300',
-                    value: 'text-sm',
+                    trigger: 'h-10 md:h-11 bg-default-100 border-2 border-default-200 hover:border-default-300',
+                    value: 'text-xs md:text-sm',
                   }}
                   placeholder="Select style"
                   selectedKeys={[infographicStyle]}
@@ -534,8 +534,8 @@ export function Hero() {
                 <Select
                   aria-label="Language"
                   classNames={{
-                    trigger: 'h-12 bg-default-100 border-2 border-default-200 hover:border-default-300',
-                    value: 'text-sm',
+                    trigger: 'h-10 md:h-11 bg-default-100 border-2 border-default-200 hover:border-default-300',
+                    value: 'text-xs md:text-sm',
                   }}
                   placeholder="Select language"
                   selectedKeys={[language]}
@@ -557,7 +557,7 @@ export function Hero() {
 
               {/* Generate Button */}
               <Button
-                className="w-full h-12 px-5 bg-success text-white text-base font-bold leading-normal tracking-wide"
+                className="w-full h-11 md:h-12 px-5 bg-success text-white text-sm md:text-base font-bold leading-normal tracking-wide"
                 isDisabled={!isValidUrl}
                 size="lg"
                 onPress={handleGenerate}
@@ -571,20 +571,20 @@ export function Hero() {
   };
 
   return (
-    <section className="w-full min-h-screen snap-start flex items-center justify-center overflow-hidden">
-      <div className="container mx-auto max-w-2xl px-4 sm:px-6 py-6 md:py-8 w-full">
+    <section className="w-full h-[calc(100vh-112px)] flex items-center justify-center">
+      <div className="container mx-auto max-w-2xl px-4 sm:px-6 w-full">
         <motion.div
           animate="visible"
-          className="flex flex-col items-center justify-center text-center gap-8"
+          className="flex flex-col items-center justify-center text-center gap-4 md:gap-6"
           initial="hidden"
           variants={staggerContainer}
         >
           {step === 'idle' && (
-            <motion.div className="flex flex-col gap-4" variants={fadeUp}>
-              <h1 className="text-4xl font-black leading-tight tracking-tighter md:text-5xl">
+            <motion.div className="flex flex-col gap-2 md:gap-3" variants={fadeUp}>
+              <h1 className="text-3xl font-black leading-tight tracking-tighter md:text-4xl lg:text-5xl">
                 Turn your URLs into clean infographics in seconds.
               </h1>
-              <h2 className="text-base font-normal leading-normal text-default-500 md:text-lg">
+              <h2 className="text-xs font-normal leading-normal text-default-500 md:text-sm">
                 Support WeChat Articles, Blogs, and News.
               </h2>
             </motion.div>
@@ -596,7 +596,7 @@ export function Hero() {
 
           {step === 'idle' && (
             <motion.p
-              className="text-default-400 text-sm font-normal leading-normal"
+              className="text-default-400 text-xs md:text-sm font-normal leading-normal"
               variants={fadeUp}
             >
               Powered by Nano Banana Pro

@@ -88,19 +88,19 @@ export function HowItWorks() {
             >
               {/* Step number */}
               <div className='w-14 h-14 rounded-full bg-gradient-to-br from-primary to-secondary text-white grid place-items-center font-bold text-xl shadow-lg mb-5'>
-                {step.step}
-              </div>
+                      {step.step}
+                    </div>
               
               {/* Icon and title */}
               <div className='flex items-center justify-center gap-2 mb-3'>
                 <span className='text-2xl'>{step.icon}</span>
                 <h3 className='text-xl font-semibold'>{step.title}</h3>
-              </div>
+                      </div>
               
               {/* Description */}
               <p className='text-default-500 text-sm leading-relaxed max-w-xs'>
-                {step.description}
-              </p>
+                        {step.description}
+                      </p>
             </motion.div>
           ))}
         </motion.div>

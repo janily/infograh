@@ -20,7 +20,7 @@ export function Footer() {
           Privacy
         </Link>
         <span className='text-default-200'>•</span>
-        <Link
+        {/* <Link
           isExternal
           className='text-default-400 hover:text-default-600 transition-colors'
           href='https://fal.ai'
@@ -28,7 +28,7 @@ export function Footer() {
         >
           FAL AI
         </Link>
-        <span className='text-default-200'>•</span>
+        <span className='text-default-200'>•</span> */}
         <Link
           isExternal
           className='flex items-center gap-1 text-default-400 hover:text-default-600 transition-colors'
@@ -38,7 +38,7 @@ export function Footer() {
           Find me on <XIcon className='w-3 h-3' />
         </Link>
         <span className='text-default-200'>•</span>
-        <Link
+        {/* <Link
           isExternal
           className='flex items-center gap-1.5 text-default-700 hover:text-primary transition-colors font-medium bg-default-100 hover:bg-default-200 px-2 py-1 rounded-md'
           href='https://github.com/deifos/picturemeai_nextjs'
@@ -46,7 +46,7 @@ export function Footer() {
         >
           <GitHubIcon className='w-3.5 h-3.5' />
           <span>Clone me</span>
-        </Link>
+        </Link> */}
       </div>
     </footer>
   );
