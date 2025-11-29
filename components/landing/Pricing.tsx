@@ -103,12 +103,14 @@ export function Pricing() {
           <div className='bg-gradient-to-r from-success/10 via-success/5 to-success/10 border border-success/30 rounded-2xl px-6 py-4 text-center'>
             <div className='flex items-center justify-center gap-2 mb-1'>
               <span className='text-2xl'>🎉</span>
-              <span className='text-success font-bold text-lg'>Currently Free!</span>
+              <span className='text-success font-bold text-lg'>
+                Currently Free!
+              </span>
               <span className='text-2xl'>🎉</span>
             </div>
             <p className='text-default-600 text-sm'>
-              We&apos;re in beta - enjoy unlimited infographic generation for free. 
-              No credit card required.
+              We&apos;re in beta - enjoy unlimited infographic generation for
+              free. No credit card required.
             </p>
           </div>
         </motion.div>

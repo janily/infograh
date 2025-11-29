@@ -16,7 +16,12 @@ import { ZoomIcon } from '@/components/icons';
 const POLL_INTERVAL_MS = 3000;
 const POLL_TIMEOUT_MS = 300000;
 
-type GenerationStep = 'idle' | 'fetching' | 'generating' | 'completed' | 'error';
+type GenerationStep =
+  | 'idle'
+  | 'fetching'
+  | 'generating'
+  | 'completed'
+  | 'error';
 
 // Style options
 const INFOGRAPHIC_STYLES = [
@@ -73,9 +78,12 @@ export function Hero() {
   const [isWeChatUrl, setIsWeChatUrl] = useState(false);
   const [step, setStep] = useState<GenerationStep>('idle');
   const [error, setError] = useState<string | null>(null);
-  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(
+    null
+  );
   const [progress, setProgress] = useState(0);
-  const [infographicStyle, setInfographicStyle] = useState<InfographicStyle>('MODERN_EDITORIAL');
+  const [infographicStyle, setInfographicStyle] =
+    useState<InfographicStyle>('MODERN_EDITORIAL');
   const [language, setLanguage] = useState('Chinese');
 
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -92,7 +100,8 @@ export function Hero() {
   const validateUrl = (inputUrl: string) => {
     try {
       const urlObj = new URL(inputUrl);
-      const isValid = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+      const isValid =
+        urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
 
       setIsValidUrl(isValid);
 
@@ -158,15 +167,18 @@ export function Hero() {
       setStep('generating');
       setProgress(10);
 
-      const generateResponse = await fetch(API_CONFIG.ENDPOINTS.GENERATE_INFOGRAPHIC, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          structuralSummary: content,
-          style: infographicStyle,
-          language: language,
-        }),
-      });
+      const generateResponse = await fetch(
+        API_CONFIG.ENDPOINTS.GENERATE_INFOGRAPHIC,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            structuralSummary: content,
+            style: infographicStyle,
+            language: language,
+          }),
+        }
+      );
 
       if (!generateResponse.ok) {
         throw new Error('Failed to generate infographic');
@@ -270,34 +282,36 @@ export function Hero() {
       case 'generating':
         return (
           <motion.div
-            key="generating"
-            animate="visible"
-            className="w-full max-w-xl"
-            exit="exit"
-            initial="hidden"
+            key='generating'
+            animate='visible'
+            className='w-full max-w-xl'
+            exit='exit'
+            initial='hidden'
             variants={scaleIn}
           >
-            <div className="bg-content1 rounded-2xl shadow-xl p-8 md:p-12">
-              <div className="flex flex-col items-center gap-6">
+            <div className='bg-content1 rounded-2xl shadow-xl p-8 md:p-12'>
+              <div className='flex flex-col items-center gap-6'>
                 {/* Animated loader */}
-                <div className="relative w-24 h-24">
-                  <div className="absolute inset-0 rounded-full border-4 border-default-200" />
+                <div className='relative w-24 h-24'>
+                  <div className='absolute inset-0 rounded-full border-4 border-default-200' />
                   <div
-                    className="absolute inset-0 rounded-full border-4 border-success border-t-transparent animate-spin"
+                    className='absolute inset-0 rounded-full border-4 border-success border-t-transparent animate-spin'
                     style={{ animationDuration: '1s' }}
                   />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-success">
+                  <div className='absolute inset-0 flex items-center justify-center'>
+                    <span className='text-2xl font-bold text-success'>
                       {step === 'fetching' ? '📄' : `${progress}%`}
                     </span>
                   </div>
                 </div>
 
-                <div className="text-center">
-                  <h3 className="text-xl font-bold text-foreground mb-2">
-                    {step === 'fetching' ? 'Fetching Content...' : 'Creating Your Infographic...'}
+                <div className='text-center'>
+                  <h3 className='text-xl font-bold text-foreground mb-2'>
+                    {step === 'fetching'
+                      ? 'Fetching Content...'
+                      : 'Creating Your Infographic...'}
                   </h3>
-                  <p className="text-default-500">
+                  <p className='text-default-500'>
                     {step === 'fetching'
                       ? 'Extracting article content from the URL'
                       : 'AI is designing your beautiful infographic'}
@@ -305,14 +319,20 @@ export function Hero() {
                 </div>
 
                 {/* Progress steps */}
-                <div className="flex items-center gap-2 mt-4">
-                  <div className={`w-3 h-3 rounded-full ${step === 'fetching' ? 'bg-success animate-pulse' : 'bg-success'}`} />
-                  <div className={`w-8 h-0.5 ${step === 'generating' ? 'bg-success' : 'bg-default-200'}`} />
-                  <div className={`w-3 h-3 rounded-full ${step === 'generating' ? 'bg-success animate-pulse' : 'bg-default-200'}`} />
-                  <div className="w-8 h-0.5 bg-default-200" />
-                  <div className="w-3 h-3 rounded-full bg-default-200" />
+                <div className='flex items-center gap-2 mt-4'>
+                  <div
+                    className={`w-3 h-3 rounded-full ${step === 'fetching' ? 'bg-success animate-pulse' : 'bg-success'}`}
+                  />
+                  <div
+                    className={`w-8 h-0.5 ${step === 'generating' ? 'bg-success' : 'bg-default-200'}`}
+                  />
+                  <div
+                    className={`w-3 h-3 rounded-full ${step === 'generating' ? 'bg-success animate-pulse' : 'bg-default-200'}`}
+                  />
+                  <div className='w-8 h-0.5 bg-default-200' />
+                  <div className='w-3 h-3 rounded-full bg-default-200' />
                 </div>
-                <div className="flex items-center justify-between w-40 text-xs text-default-400">
+                <div className='flex items-center justify-between w-40 text-xs text-default-400'>
                   <span>Fetch</span>
                   <span>Generate</span>
                   <span>Done</span>
@@ -325,53 +345,60 @@ export function Hero() {
       case 'completed':
         return (
           <motion.div
-            key="completed"
-            animate="visible"
-            className="w-full max-w-4xl"
-            exit="exit"
-            initial="hidden"
+            key='completed'
+            animate='visible'
+            className='w-full max-w-4xl'
+            exit='exit'
+            initial='hidden'
             variants={scaleIn}
           >
-            <div className="bg-content1 rounded-2xl shadow-xl p-6 md:p-8">
-              <div className="flex flex-col items-center gap-6">
+            <div className='bg-content1 rounded-2xl shadow-xl p-6 md:p-8'>
+              <div className='flex flex-col items-center gap-6'>
                 {/* Success badge */}
-                <div className="flex items-center gap-2 text-success">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <div className='flex items-center gap-2 text-success'>
+                  <svg
+                    className='w-6 h-6'
+                    fill='currentColor'
+                    viewBox='0 0 20 20'
+                  >
                     <path
-                      clipRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      fillRule="evenodd"
+                      clipRule='evenodd'
+                      d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                      fillRule='evenodd'
                     />
                   </svg>
-                  <span className="font-semibold">Infographic Created!</span>
+                  <span className='font-semibold'>Infographic Created!</span>
                 </div>
 
                 {/* Generated image with lightbox */}
                 {generatedImageUrl && (
-                  <ImageLightbox alt="Generated Infographic" src={generatedImageUrl}>
-                    <div className="relative w-full rounded-xl overflow-hidden border border-default-200 shadow-lg group cursor-pointer">
+                  <ImageLightbox
+                    alt='Generated Infographic'
+                    src={generatedImageUrl}
+                  >
+                    <div className='relative w-full rounded-xl overflow-hidden border border-default-200 shadow-lg group cursor-pointer'>
                       {/* Image container - auto height based on image aspect ratio */}
-                      <div className="relative w-full">
+                      <div className='relative w-full'>
                         <Image
-                          alt="Generated Infographic"
-                          className="w-full h-auto object-contain"
+                          unoptimized
+                          alt='Generated Infographic'
+                          className='w-full h-auto object-contain'
                           height={600}
                           src={generatedImageUrl}
-                          unoptimized
                           width={1200}
                         />
                       </div>
-                      
+
                       {/* Hover overlay with zoom icon */}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
-                          <ZoomIcon className="w-8 h-8 text-gray-800" />
+                      <div className='absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100'>
+                        <div className='bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300'>
+                          <ZoomIcon className='w-8 h-8 text-gray-800' />
                         </div>
                       </div>
-                      
+
                       {/* Click hint */}
-                      <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-1.5">
-                        <ZoomIcon className="w-3.5 h-3.5" />
+                      <div className='absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-1.5'>
+                        <ZoomIcon className='w-3.5 h-3.5' />
                         <span>Click to zoom</span>
                       </div>
                     </div>
@@ -379,14 +406,24 @@ export function Hero() {
                 )}
 
                 {/* Action buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+                <div className='flex flex-col sm:flex-row gap-3 w-full max-w-md'>
                   <Button
-                    className="flex-1 font-semibold"
-                    color="success"
-                    size="lg"
+                    className='flex-1 font-semibold'
+                    color='success'
+                    size='lg'
                     startContent={
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" />
+                      <svg
+                        className='w-5 h-5'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth={2}
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          d='M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        />
                       </svg>
                     }
                     onPress={handleDownload}
@@ -394,15 +431,25 @@ export function Hero() {
                     Download
                   </Button>
                   <Button
-                    className="flex-1 font-semibold"
-                    color="default"
-                    size="lg"
-                    variant="bordered"
+                    className='flex-1 font-semibold'
+                    color='default'
+                    size='lg'
                     startContent={
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round" />
+                      <svg
+                        className='w-5 h-5'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth={2}
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        />
                       </svg>
                     }
+                    variant='bordered'
                     onPress={handleReset}
                   >
                     Generate Another
@@ -410,7 +457,7 @@ export function Hero() {
                 </div>
 
                 {/* Note about image expiry */}
-                <p className="text-xs text-default-400 text-center">
+                <p className='text-xs text-default-400 text-center'>
                   💡 Images expire in 2 hours. Please download to keep.
                 </p>
               </div>
@@ -421,29 +468,37 @@ export function Hero() {
       case 'error':
         return (
           <motion.div
-            key="error"
-            animate="visible"
-            className="w-full max-w-xl"
-            exit="exit"
-            initial="hidden"
+            key='error'
+            animate='visible'
+            className='w-full max-w-xl'
+            exit='exit'
+            initial='hidden'
             variants={scaleIn}
           >
-            <div className="bg-content1 rounded-2xl shadow-xl p-8">
-              <div className="flex flex-col items-center gap-6">
-                <div className="w-16 h-16 rounded-full bg-danger/10 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-danger" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" strokeLinecap="round" strokeLinejoin="round" />
+            <div className='bg-content1 rounded-2xl shadow-xl p-8'>
+              <div className='flex flex-col items-center gap-6'>
+                <div className='w-16 h-16 rounded-full bg-danger/10 flex items-center justify-center'>
+                  <svg
+                    className='w-8 h-8 text-danger'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth={2}
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
                   </svg>
                 </div>
-                <div className="text-center">
-                  <h3 className="text-xl font-bold text-foreground mb-2">Something went wrong</h3>
-                  <p className="text-default-500">{error}</p>
+                <div className='text-center'>
+                  <h3 className='text-xl font-bold text-foreground mb-2'>
+                    Something went wrong
+                  </h3>
+                  <p className='text-default-500'>{error}</p>
                 </div>
-                <Button
-                  color="primary"
-                  size="lg"
-                  onPress={handleReset}
-                >
+                <Button color='primary' size='lg' onPress={handleReset}>
                   Try Again
                 </Button>
               </div>
@@ -454,36 +509,36 @@ export function Hero() {
       default: // idle
         return (
           <motion.div
-            key="idle"
-            animate="visible"
-            className="w-full max-w-xl bg-content1 rounded-xl shadow-lg p-4 md:p-6"
-            exit="exit"
-            initial="hidden"
+            key='idle'
+            animate='visible'
+            className='w-full max-w-xl bg-content1 rounded-xl shadow-lg p-4 md:p-6'
+            exit='exit'
+            initial='hidden'
             variants={fadeUp}
           >
-            <div className="flex flex-col gap-3">
+            <div className='flex flex-col gap-3'>
               {/* URL Input */}
-              <div className="flex flex-col w-full h-12 md:h-14">
-                <div className="flex w-full flex-1 items-stretch rounded-lg h-full border-2 border-default-200 focus-within:ring-2 focus-within:ring-success focus-within:border-success">
-                  <div className="text-default-400 flex items-center justify-center pl-4">
+              <div className='flex flex-col w-full h-12 md:h-14'>
+                <div className='flex w-full flex-1 items-stretch rounded-lg h-full border-2 border-default-200 focus-within:ring-2 focus-within:ring-success focus-within:border-success'>
+                  <div className='text-default-400 flex items-center justify-center pl-4'>
                     <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
+                      className='w-6 h-6'
+                      fill='none'
+                      stroke='currentColor'
                       strokeWidth={2}
-                      viewBox="0 0 24 24"
+                      viewBox='0 0 24 24'
                     >
                       <path
-                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d='M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
                       />
                     </svg>
                   </div>
                   <input
-                    className="flex-1 bg-transparent px-3 text-sm md:text-base font-normal leading-normal text-foreground placeholder:text-default-400 focus:outline-none"
-                    placeholder="Paste your article URL here..."
-                    type="url"
+                    className='flex-1 bg-transparent px-3 text-sm md:text-base font-normal leading-normal text-foreground placeholder:text-default-400 focus:outline-none'
+                    placeholder='Paste your article URL here...'
+                    type='url'
                     value={url}
                     onChange={e => handleUrlChange(e.target.value)}
                     onKeyDown={e => {
@@ -493,13 +548,13 @@ export function Hero() {
                     }}
                   />
                   {isWeChatUrl && (
-                    <div className="flex items-center justify-center pr-4">
+                    <div className='flex items-center justify-center pr-4'>
                       <svg
-                        className="h-6 w-6 text-success"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
+                        className='h-6 w-6 text-success'
+                        fill='currentColor'
+                        viewBox='0 0 24 24'
                       >
-                        <path d="M12 2C6.486 2 2 6.041 2 11.021C2 14.125 3.653 16.892 6.241 18.539L5.01 22L9.279 20.027C10.154 20.158 11.063 20.223 12 20.223C17.514 20.223 22 16.203 22 11.223C22 6.242 17.514 2 12 2ZM9.898 12.879C9.898 13.521 9.388 14.031 8.746 14.031C8.104 14.031 7.594 13.521 7.594 12.879V12.783C7.594 12.141 8.104 11.631 8.746 11.631C9.388 11.631 9.898 12.141 9.898 12.783V12.879ZM16.398 12.879C16.398 13.521 15.888 14.031 15.246 14.031C14.604 14.031 14.094 13.521 14.094 12.879V12.783C14.094 12.141 14.604 11.631 15.246 11.631C15.888 11.631 16.398 12.141 16.398 12.783V12.879Z" />
+                        <path d='M12 2C6.486 2 2 6.041 2 11.021C2 14.125 3.653 16.892 6.241 18.539L5.01 22L9.279 20.027C10.154 20.158 11.063 20.223 12 20.223C17.514 20.223 22 16.203 22 11.223C22 6.242 17.514 2 12 2ZM9.898 12.879C9.898 13.521 9.388 14.031 8.746 14.031C8.104 14.031 7.594 13.521 7.594 12.879V12.783C7.594 12.141 8.104 11.631 8.746 11.631C9.388 11.631 9.898 12.141 9.898 12.783V12.879ZM16.398 12.879C16.398 13.521 15.888 14.031 15.246 14.031C14.604 14.031 14.094 13.521 14.094 12.879V12.783C14.094 12.141 14.604 11.631 15.246 11.631C15.888 11.631 16.398 12.141 16.398 12.783V12.879Z' />
                       </svg>
                     </div>
                   )}
@@ -507,59 +562,67 @@ export function Hero() {
               </div>
 
               {/* Style and Language Selectors */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className='grid grid-cols-2 gap-2'>
                 <Select
-                  aria-label="Infographic Style"
+                  aria-label='Infographic Style'
                   classNames={{
-                    trigger: 'h-10 md:h-11 bg-default-100 border-2 border-default-200 hover:border-default-300',
+                    trigger:
+                      'h-10 md:h-11 bg-default-100 border-2 border-default-200 hover:border-default-300',
                     value: 'text-xs md:text-sm',
                   }}
-                  placeholder="Select style"
+                  placeholder='Select style'
                   selectedKeys={[infographicStyle]}
-                  size="md"
-                  variant="flat"
+                  size='md'
+                  variant='flat'
                   onSelectionChange={(keys: Selection) => {
                     if (keys === 'all') return;
                     const key = Array.from(keys)[0];
+
                     if (typeof key === 'string') {
                       setInfographicStyle(key as InfographicStyle);
                     }
                   }}
                 >
                   {INFOGRAPHIC_STYLES.map(styleOption => (
-                    <SelectItem key={styleOption.key}>{styleOption.label}</SelectItem>
+                    <SelectItem key={styleOption.key}>
+                      {styleOption.label}
+                    </SelectItem>
                   ))}
                 </Select>
 
                 <Select
-                  aria-label="Language"
+                  aria-label='Language'
                   classNames={{
-                    trigger: 'h-10 md:h-11 bg-default-100 border-2 border-default-200 hover:border-default-300',
+                    trigger:
+                      'h-10 md:h-11 bg-default-100 border-2 border-default-200 hover:border-default-300',
                     value: 'text-xs md:text-sm',
                   }}
-                  placeholder="Select language"
+                  placeholder='Select language'
                   selectedKeys={[language]}
-                  size="md"
-                  variant="flat"
+                  size='md'
+                  variant='flat'
                   onSelectionChange={(keys: Selection) => {
                     if (keys === 'all') return;
                     const key = Array.from(keys)[0];
+
                     if (typeof key === 'string') {
                       setLanguage(key);
                     }
                   }}
                 >
                   {LANGUAGE_OPTIONS.map(langOption => (
-                    <SelectItem key={langOption.key}>{langOption.label}</SelectItem>
+                    <SelectItem key={langOption.key}>
+                      {langOption.label}
+                    </SelectItem>
                   ))}
                 </Select>
               </div>
 
               {/* Generate Button */}
               <Button
-                className="w-full h-11 md:h-12 px-5 bg-success text-white text-sm md:text-base font-bold leading-normal tracking-wide"
+                className='w-full h-11 md:h-12 px-5 bg-success text-white text-sm md:text-base font-bold leading-normal tracking-wide'
                 isDisabled={!isValidUrl}
-                size="lg"
+                size='lg'
                 onPress={handleGenerate}
               >
                 Generate Infographic
@@ -571,32 +634,33 @@ export function Hero() {
   };
 
   return (
-    <section className="w-full h-[calc(100vh-112px)] flex items-center justify-center">
-      <div className="container mx-auto max-w-2xl px-4 sm:px-6 w-full">
+    <section className='w-full h-[calc(100vh-112px)] flex items-center justify-center'>
+      <div className='container mx-auto max-w-2xl px-4 sm:px-6 w-full'>
         <motion.div
-          animate="visible"
-          className="flex flex-col items-center justify-center text-center gap-4 md:gap-6"
-          initial="hidden"
+          animate='visible'
+          className='flex flex-col items-center justify-center text-center gap-4 md:gap-6'
+          initial='hidden'
           variants={staggerContainer}
         >
           {step === 'idle' && (
-            <motion.div className="flex flex-col gap-2 md:gap-3" variants={fadeUp}>
-              <h1 className="text-3xl font-black leading-tight tracking-tighter md:text-4xl lg:text-5xl">
+            <motion.div
+              className='flex flex-col gap-2 md:gap-3'
+              variants={fadeUp}
+            >
+              <h1 className='text-3xl font-black leading-tight tracking-tighter md:text-4xl lg:text-5xl'>
                 Turn your URLs into clean infographics in seconds.
               </h1>
-              <h2 className="text-xs font-normal leading-normal text-default-500 md:text-sm">
+              <h2 className='text-xs font-normal leading-normal text-default-500 md:text-sm'>
                 Support WeChat Articles, Blogs, and News.
               </h2>
             </motion.div>
           )}
 
-          <AnimatePresence mode="wait">
-            {renderContent()}
-          </AnimatePresence>
+          <AnimatePresence mode='wait'>{renderContent()}</AnimatePresence>
 
           {step === 'idle' && (
             <motion.p
-              className="text-default-400 text-xs md:text-sm font-normal leading-normal"
+              className='text-default-400 text-xs md:text-sm font-normal leading-normal'
               variants={fadeUp}
             >
               Powered by Nano Banana Pro

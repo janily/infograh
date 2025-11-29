@@ -65,9 +65,11 @@ export function GeneratedGallery({
           <div className='col-span-full flex items-center justify-center py-12'>
             <div className='flex flex-col items-center gap-3'>
               <Spinner color='primary' size='lg' />
-              <p className='text-default-500 text-sm'>Loading your infographics...</p>
+              <p className='text-default-500 text-sm'>
+                Loading your infographics...
+              </p>
             </div>
-              </div>
+          </div>
         )}
 
         {/* Empty state */}
@@ -94,8 +96,9 @@ export function GeneratedGallery({
                   No infographics yet
                 </h3>
                 <p className='text-default-500 text-sm max-w-md'>
-                  Enter a URL, fetch its content, then click "Generate Infographic" 
-                  to create beautiful infographics from any article.
+                  Enter a URL, fetch its content, then click "Generate
+                  Infographic" to create beautiful infographics from any
+                  article.
                 </p>
               </div>
             </div>

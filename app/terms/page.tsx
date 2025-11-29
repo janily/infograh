@@ -20,9 +20,9 @@ const TermsAndConditions: React.FC = () => {
             </h1>
 
             <p className='mb-6 text-default-600 text-lg'>
-              By using url2info, you agree to comply with and be bound by
-              the following terms and conditions. Please read these terms
-              carefully before using our platform.
+              By using url2info, you agree to comply with and be bound by the
+              following terms and conditions. Please read these terms carefully
+              before using our platform.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -39,8 +39,8 @@ const TermsAndConditions: React.FC = () => {
               2. Service Description
             </h2>
             <p className='mb-6 text-default-600'>
-              url2info is an AI-powered service that transforms web articles and 
-              content into visual infographics. Our service fetches content from 
+              url2info is an AI-powered service that transforms web articles and
+              content into visual infographics. Our service fetches content from
               URLs you provide and uses{' '}
               <Link
                 isExternal
@@ -50,8 +50,8 @@ const TermsAndConditions: React.FC = () => {
               >
                 Nano Banana Pro
               </Link>{' '}
-              AI technology to generate infographic images. By using our service, 
-              you also agree to their respective terms of service.
+              AI technology to generate infographic images. By using our
+              service, you also agree to their respective terms of service.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -61,11 +61,25 @@ const TermsAndConditions: React.FC = () => {
               When using url2info, you agree to:
             </p>
             <ul className='list-disc pl-8 mb-6 text-default-600 space-y-2'>
-              <li>Only provide URLs to content that you have the right to use or is publicly accessible</li>
-              <li>Not use the service to process content that is illegal, inappropriate, or violates others&apos; rights</li>
-              <li>Not attempt to circumvent any technical limitations or security measures</li>
-              <li>Not use the service for any illegal or unauthorized purpose</li>
-              <li>Respect the intellectual property rights of original content creators</li>
+              <li>
+                Only provide URLs to content that you have the right to use or
+                is publicly accessible
+              </li>
+              <li>
+                Not use the service to process content that is illegal,
+                inappropriate, or violates others&apos; rights
+              </li>
+              <li>
+                Not attempt to circumvent any technical limitations or security
+                measures
+              </li>
+              <li>
+                Not use the service for any illegal or unauthorized purpose
+              </li>
+              <li>
+                Respect the intellectual property rights of original content
+                creators
+              </li>
             </ul>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -86,13 +100,26 @@ const TermsAndConditions: React.FC = () => {
               5. Generated Infographics
             </h2>
             <p className='mb-6 text-default-600'>
-              By using our AI infographic generation tools, you acknowledge that:
+              By using our AI infographic generation tools, you acknowledge
+              that:
             </p>
             <ul className='list-disc pl-8 mb-6 text-default-600 space-y-2'>
-              <li>Generated infographics are created based on the content from the URLs you provide</li>
-              <li>You may use generated infographics for personal and commercial purposes</li>
-              <li>We do not guarantee the accuracy or completeness of the generated content</li>
-              <li>Generated images are available for download for a limited time (approximately 2 hours)</li>
+              <li>
+                Generated infographics are created based on the content from the
+                URLs you provide
+              </li>
+              <li>
+                You may use generated infographics for personal and commercial
+                purposes
+              </li>
+              <li>
+                We do not guarantee the accuracy or completeness of the
+                generated content
+              </li>
+              <li>
+                Generated images are available for download for a limited time
+                (approximately 2 hours)
+              </li>
               <li>You should download images promptly as they may expire</li>
             </ul>
 
@@ -100,10 +127,10 @@ const TermsAndConditions: React.FC = () => {
               6. Service Availability
             </h2>
             <p className='mb-6 text-default-600'>
-              url2info is currently provided free of charge during our beta period. 
-              We reserve the right to modify, suspend, or discontinue the service 
-              at any time without prior notice. We may introduce paid features or 
-              usage limits in the future.
+              url2info is currently provided free of charge during our beta
+              period. We reserve the right to modify, suspend, or discontinue
+              the service at any time without prior notice. We may introduce
+              paid features or usage limits in the future.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -121,10 +148,11 @@ const TermsAndConditions: React.FC = () => {
               8. Intellectual Property
             </h2>
             <p className='mb-6 text-default-600'>
-              The url2info service, including its design, features, and underlying 
-              technology, is protected by intellectual property rights. You may not 
-              copy, modify, or distribute any part of the service without our permission. 
-              The original content from URLs remains the property of their respective owners.
+              The url2info service, including its design, features, and
+              underlying technology, is protected by intellectual property
+              rights. You may not copy, modify, or distribute any part of the
+              service without our permission. The original content from URLs
+              remains the property of their respective owners.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -141,7 +169,8 @@ const TermsAndConditions: React.FC = () => {
             </h2>
             <p className='mb-6 text-default-600'>
               These Terms and Conditions shall be governed by and construed in
-              accordance with applicable laws, without regard to conflict of law provisions.
+              accordance with applicable laws, without regard to conflict of law
+              provisions.
             </p>
 
             <p className='mt-8 text-sm text-default-500 border-t border-default-200 pt-6'>

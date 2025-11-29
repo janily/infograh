@@ -44,10 +44,7 @@ export function HowItWorks() {
   ];
 
   return (
-    <section
-      className='w-full py-20'
-      id='how-it-works'
-    >
+    <section className='w-full py-20' id='how-it-works'>
       <div className='container mx-auto max-w-5xl px-6'>
         <motion.h2
           className={title({
@@ -80,27 +77,27 @@ export function HowItWorks() {
           viewport={{ once: true }}
           whileInView='visible'
         >
-          {steps.map((step) => (
-            <motion.div 
-              key={step.step} 
+          {steps.map(step => (
+            <motion.div
+              key={step.step}
               className='flex flex-col items-center text-center'
               variants={fadeUp}
             >
               {/* Step number */}
               <div className='w-14 h-14 rounded-full bg-gradient-to-br from-primary to-secondary text-white grid place-items-center font-bold text-xl shadow-lg mb-5'>
-                      {step.step}
-                    </div>
-              
+                {step.step}
+              </div>
+
               {/* Icon and title */}
               <div className='flex items-center justify-center gap-2 mb-3'>
                 <span className='text-2xl'>{step.icon}</span>
                 <h3 className='text-xl font-semibold'>{step.title}</h3>
-                      </div>
-              
+              </div>
+
               {/* Description */}
               <p className='text-default-500 text-sm leading-relaxed max-w-xs'>
-                        {step.description}
-                      </p>
+                {step.description}
+              </p>
             </motion.div>
           ))}
         </motion.div>

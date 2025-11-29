@@ -11,3 +11,8 @@ export const INFOGRAPHIC_STYLES = {
 } as const;
 
 export type InfographicStyle = keyof typeof INFOGRAPHIC_STYLES;
+
+// Helper function to get style guidelines
+export function getStyleGuidelines(style: InfographicStyle): string {
+  return INFOGRAPHIC_STYLES[style];
+}
