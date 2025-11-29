@@ -1,6 +1,6 @@
 import { Link } from '@heroui/link';
 
-import { GitHubIcon, XIcon } from '@/components/icons';
+import { XIcon } from '@/components/icons';
 
 export function Footer() {
   return (

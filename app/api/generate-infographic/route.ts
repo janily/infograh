@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import {
-  INFOGRAPHIC_STYLES,
+  getStyleGuidelines,
   type InfographicStyle,
 } from '@/lib/infographic-styles';
 
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       .substring(0, 50);
 
     // Get style guidelines
-    const styleGuidelines = INFOGRAPHIC_STYLES[style];
+    const styleGuidelines = getStyleGuidelines(style);
 
     // Build the prompt
     const prompt = `Create a professional, high-quality educational infographic based strictly on this structured content plan: ${sanitizedSummary}

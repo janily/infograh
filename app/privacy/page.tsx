@@ -20,8 +20,8 @@ const PrivacyPolicy: React.FC = () => {
             </h1>
 
             <p className='mb-6 text-default-600 text-lg'>
-              This Privacy Policy describes how url2info handles information when 
-              you use our AI-powered infographic generation service.
+              This Privacy Policy describes how url2info handles information
+              when you use our AI-powered infographic generation service.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -43,8 +43,8 @@ const PrivacyPolicy: React.FC = () => {
               Technical Information
             </h3>
             <p className='mb-6 text-default-600'>
-              We may automatically collect basic technical information such as 
-              browser type, device information, and usage patterns to improve 
+              We may automatically collect basic technical information such as
+              browser type, device information, and usage patterns to improve
               our service quality and user experience.
             </p>
 
@@ -75,16 +75,23 @@ const PrivacyPolicy: React.FC = () => {
               . We ensure that:
             </p>
             <ul className='list-disc pl-8 mb-6 text-default-600 space-y-2'>
-              <li>URL content is processed temporarily for infographic generation</li>
-              <li>Generated images are available for approximately 2 hours after creation</li>
-              <li>We do not permanently store the URLs or content you submit</li>
+              <li>
+                URL content is processed temporarily for infographic generation
+              </li>
+              <li>
+                Generated images are available for approximately 2 hours after
+                creation
+              </li>
+              <li>
+                We do not permanently store the URLs or content you submit
+              </li>
               <li>We do not use your content for marketing purposes</li>
             </ul>
 
             <p className='mb-6 text-default-600'>
-              Note: Generated infographics are temporarily stored by our AI provider, 
-              GRSAI, for operational purposes. We recommend downloading your infographics 
-              promptly as they will expire.
+              Note: Generated infographics are temporarily stored by our AI
+              provider, GRSAI, for operational purposes. We recommend
+              downloading your infographics promptly as they will expire.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -98,14 +105,15 @@ const PrivacyPolicy: React.FC = () => {
                 <strong>Unifuncs</strong> - Web content fetching and extraction
               </li>
               <li>
-                <strong>GRSAI (Nano Banana Pro)</strong> - AI infographic generation
+                <strong>GRSAI (Nano Banana Pro)</strong> - AI infographic
+                generation
               </li>
               <li>
                 <strong>Vercel</strong> - Hosting and infrastructure
               </li>
             </ul>
             <p className='mb-6 text-default-600'>
-              We do not sell, rent, or share your information with third parties 
+              We do not sell, rent, or share your information with third parties
               for marketing purposes.
             </p>
 
@@ -113,7 +121,8 @@ const PrivacyPolicy: React.FC = () => {
               5. Data Security
             </h2>
             <p className='mb-6 text-default-600'>
-              We implement appropriate security measures to protect your information:
+              We implement appropriate security measures to protect your
+              information:
             </p>
             <ul className='list-disc pl-8 mb-6 text-default-600 space-y-2'>
               <li>Encrypted data transmission (HTTPS)</li>
@@ -125,9 +134,9 @@ const PrivacyPolicy: React.FC = () => {
               6. Cookies and Tracking
             </h2>
             <p className='mb-6 text-default-600'>
-              url2info may use essential cookies for basic functionality. We do not 
-              use tracking cookies or third-party advertising trackers. Any analytics 
-              we use is for improving our service quality.
+              url2info may use essential cookies for basic functionality. We do
+              not use tracking cookies or third-party advertising trackers. Any
+              analytics we use is for improving our service quality.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
@@ -144,9 +153,8 @@ const PrivacyPolicy: React.FC = () => {
               8. Children&apos;s Privacy
             </h2>
             <p className='mb-6 text-default-600'>
-              url2info is not intended for children under 13 years of age.
-              We do not knowingly collect personal information from children
-              under 13.
+              url2info is not intended for children under 13 years of age. We do
+              not knowingly collect personal information from children under 13.
             </p>
 
             <h2 className='text-2xl font-semibold mt-8 mb-4 text-foreground'>
