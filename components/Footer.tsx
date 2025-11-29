@@ -32,7 +32,7 @@ export function Footer() {
         <Link
           isExternal
           className='flex items-center gap-1 text-default-400 hover:text-default-600 transition-colors'
-          href='https://x.com/deifosv'
+          href='https://x.com/janilychen'
           title='Find me on X'
         >
           Find me on <XIcon className='w-3 h-3' />
