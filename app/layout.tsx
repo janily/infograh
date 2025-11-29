@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteConfig.name,
     description: siteConfig.description,
-    images: ['https://url2infographic.com/og-image.jpg'],
+    images: ['https://url2infographic.com/og-image.png'],
     creator: '@url2infographic',
   },
   robots: {
