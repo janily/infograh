@@ -4,68 +4,41 @@
 
 /**
  * Maps language codes to readable language names
+ * Only includes languages that are supported by the application
+ * Based on LANGUAGE_OPTIONS in components/landing/Hero.tsx
  */
 const LANGUAGE_MAP: Record<string, string> = {
-  en: 'English',
-  'en-US': 'English',
-  'en-GB': 'English',
+  // Chinese variants
   zh: 'Chinese',
   'zh-CN': 'Chinese',
   'zh-TW': 'Chinese',
+  'zh-HK': 'Chinese',
+  // English variants
+  en: 'English',
+  'en-US': 'English',
+  'en-GB': 'English',
+  'en-CA': 'English',
+  'en-AU': 'English',
+  // Japanese
+  ja: 'Japanese',
+  'ja-JP': 'Japanese',
+  // Korean
+  ko: 'Korean',
+  'ko-KR': 'Korean',
+  // Spanish variants
   es: 'Spanish',
   'es-ES': 'Spanish',
   'es-MX': 'Spanish',
+  'es-AR': 'Spanish',
+  // French variants
   fr: 'French',
   'fr-FR': 'French',
+  'fr-CA': 'French',
+  // German variants
   de: 'German',
   'de-DE': 'German',
-  ja: 'Japanese',
-  'ja-JP': 'Japanese',
-  ko: 'Korean',
-  'ko-KR': 'Korean',
-  pt: 'Portuguese',
-  'pt-BR': 'Portuguese',
-  'pt-PT': 'Portuguese',
-  ru: 'Russian',
-  'ru-RU': 'Russian',
-  it: 'Italian',
-  'it-IT': 'Italian',
-  ar: 'Arabic',
-  'ar-SA': 'Arabic',
-  hi: 'Hindi',
-  'hi-IN': 'Hindi',
-  th: 'Thai',
-  'th-TH': 'Thai',
-  vi: 'Vietnamese',
-  'vi-VN': 'Vietnamese',
-  id: 'Indonesian',
-  'id-ID': 'Indonesian',
-  tr: 'Turkish',
-  'tr-TR': 'Turkish',
-  pl: 'Polish',
-  'pl-PL': 'Polish',
-  nl: 'Dutch',
-  'nl-NL': 'Dutch',
-  sv: 'Swedish',
-  'sv-SE': 'Swedish',
-  da: 'Danish',
-  'da-DK': 'Danish',
-  fi: 'Finnish',
-  'fi-FI': 'Finnish',
-  no: 'Norwegian',
-  'nb-NO': 'Norwegian',
-  cs: 'Czech',
-  'cs-CZ': 'Czech',
-  el: 'Greek',
-  'el-GR': 'Greek',
-  he: 'Hebrew',
-  'he-IL': 'Hebrew',
-  hu: 'Hungarian',
-  'hu-HU': 'Hungarian',
-  ro: 'Romanian',
-  'ro-RO': 'Romanian',
-  uk: 'Ukrainian',
-  'uk-UA': 'Ukrainian',
+  'de-AT': 'German',
+  'de-CH': 'German',
 };
 
 /**
