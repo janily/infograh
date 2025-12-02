@@ -10,6 +10,7 @@ import { GeneratedGallery } from '@/components/dashboard/GeneratedGallery';
 import { GeneratingState } from '@/components/dashboard/generating/GeneratingState';
 import { API_CONFIG } from '@/config/app-config';
 import { type InfographicStyle } from '@/lib/infographic-styles';
+import { detectBrowserLanguage } from '@/lib/language-utils';
 
 // Polling configuration
 const POLL_INTERVAL_MS = 3000; // 3 seconds
@@ -30,7 +31,9 @@ export function DashboardClient() {
   const [url, setUrl] = useState<string>('');
   const [infographicStyle, setInfographicStyle] =
     useState<InfographicStyle>('MODERN_EDITORIAL');
-  const [language, setLanguage] = useState<string>('English');
+  const [language, setLanguage] = useState<string>(() =>
+    detectBrowserLanguage()
+  );
   const [fetchedContent, setFetchedContent] = useState<string | null>(null);
   const [isFetchingContent, setIsFetchingContent] = useState<boolean>(false);
 
