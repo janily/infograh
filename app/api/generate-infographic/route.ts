@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       style = 'MODERN_EDITORIAL',
       language = 'English',
       aspectRatio = 'auto',
-      imageSize = '4k',
+      imageSize = '2k',
     } = body;
 
     if (!structuralSummary) {
